@@ -132,16 +132,17 @@ class AppManager:
         else:
              print('handleInsideLightSensor m_fIsInsideAutoLightEnabled false')             
 
-    def handleInsideTempSensor(selfm a_iTempValue)
-        print('handleInsideTempSensor a_iTempValue = '+ a_iTempValue +' m_fUserWarmTempMode = ' + m_fUserWarmTempMode )
+    def handleInsideTempSensor(self, a_iTempValue):
+        print('handleInsideTempSensor a_iTempValue = '+ chr(a_iTempValue) )
+        print('m_fUserWarmTempMode = ' + chr(self.m_fUserWarmTempMode) )
         
-        if ( False == m_fUserWarmTempMode):
-            if( m_iUserDesiredTemp < a_iTempValue ):
+        if ( False == self.m_fUserWarmTempMode):
+            if( self.m_iUserDesiredTemp < a_iTempValue ):
                 self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_VENT_ON)
             else:
                 self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_VENT_OFF)
         else:
-            if( m_iUserDesiredTemp > a_iTempValue ):
+            if( self.m_iUserDesiredTemp > a_iTempValue ):
                 self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_HEAT_ON)
             else:
                 self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_HEAT_OFF)

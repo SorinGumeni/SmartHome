@@ -14,7 +14,7 @@ class SerialHandler:
         return stringWODigits
 
     def keepOnlyDigits(self, a_sString):
-        onlyDigitString = ''.join(i for i in a_sString if is i.isdigit())
+        onlyDigitString = ''.join(i for i in a_sString if i.isdigit())
         return onlyDigitString    
 
     def handleEvent(self, a_sEvent):
@@ -22,8 +22,8 @@ class SerialHandler:
         
         a_sEvent = a_sEvent.strip()
         temp = a_sEvent
-        a_sEvent = removeDigits(a_sEvent)
-
+        a_sEvent = self.removeDigits(a_sEvent)
+        print('Handle serial event: ' + a_sEvent)
         if a_sEvent == SerialSettings.SSE_RX_OUTSIDE_SENSOR_ON:
             print('SSE_RX_OUTSIDE_SENSOR_ON event received')
             self.m_oAppMngr.alarmSystemActivated()
@@ -41,10 +41,16 @@ class SerialHandler:
             self.m_oAppMngr.handleOutsideLightSensor('LOW')
 
         elif a_sEvent == SerialSettings.SSE_RX_INSIDE_TEMP_VAL:
-            temp = keepOnlyDigits(temp)
-            value = temp.map {it.toString().toInt()}
+            temp = self.keepOnlyDigits(temp)
+            value = int(temp)
             print('SSE_RX_INSIDE_TEMP_VAL event received' + temp)
+            print(value)
             self.m_oAppMngr.handleInsideTempSensor(value)
-
+        elif a_sEvent == SSE_RX_INSIDE_LIGHT_SENSOR_ON:
+            print('SSE_RX_INSIDE_LIGHT_SENSOR_ON event received')
+            self.m_oAppMngr.handleInsideLightSensor('HIGH')
+        elif a_sEvent == SSE_RX_INSIDE_LIGHT_SENSOR_OFF:
+            print('SSE_RX_INSIDE_LIGHT_SENSOR_OFF event received')
+            self.m_oAppMngr.handleInsideLightSensor('LOW')
         else:
             print('Unknown serial event received' + a_sEvent)

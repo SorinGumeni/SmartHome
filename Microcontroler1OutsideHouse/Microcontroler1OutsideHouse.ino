@@ -26,8 +26,8 @@ void loop()
   lightSensorVal  = digitalRead(OUTSIDE_LIGHT_SENSOR);
   
   //////////////////// SEND SENSOR STATE THROUGH SERIAL ///////////////////////
-  handleMotionSensorDistance(motionSensorVal);
-  handleLightSensorDistance(lightSensorVal);
+  handleMotionSensor(motionSensorVal);
+  handleLightSensor(lightSensorVal);
   
   //////////////////// CHECK FOR SERIAL EVENTS ///////////////////////
   handleSerialEvent();
@@ -66,7 +66,7 @@ void handleSerialEvent()
   }
 }
 
-void handleMotionSensorDistance(DIGITAL value)
+void handleMotionSensor(DIGITAL value)
 {
   if (value == HIGH)
   {
@@ -88,7 +88,7 @@ void handleMotionSensorDistance(DIGITAL value)
   motionSensorPreviousstate = motionSensorCurrentstate;
 }
 
-void handleLightSensorDistance(DIGITAL value)
+void handleLightSensor(DIGITAL value)
 {
   if (value == HIGH)
   {

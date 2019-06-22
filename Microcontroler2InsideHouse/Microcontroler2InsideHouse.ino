@@ -1,24 +1,34 @@
 #include "CommonDefines.h"
 
+DIGITAL motionSensorVal = 0;
+DIGITAL lightSensorVal = 0; 
+int tempSensorValue;
 
 bool lightSensorCurrentstate  = false;
 bool lightSensorPreviousstate = false;
-int incomingByte = 0;
+char incomingByte = 0;
 
 void setup() 
 {
-  pinMode(INSIDE_LIGHT_SENSOR, INPUT_PULLUP);// define pin as Input  sensor
+  pinMode(INSIDE_LIGHT_SENSOR, INPUT);// define pin as Input  sensor
+  pinMode(INSIDE_MOTION_SENSOR, INPUT);
   pinMode(INSIDE_LIGHT_LED, OUTPUT);    // declare led pin as output
   Serial.begin(9600); // Default communication rate of the Bluetooth module
 }
 
 void loop() 
 {
-  DIGITAL lightSensorValue = digitalRead(INSIDE_LIGHT_SENSOR);// read the sensor
-  int tempSensorValue = analogRead(INSIDE_TEMP_SENSOR);
-
+  //////////////////// READ SENSOR VALUES ///////////////////////		
+  lightSensorValue = digitalRead(INSIDE_LIGHT_SENSOR);// read the sensor
+  tempSensorValue = analogRead(INSIDE_TEMP_SENSOR);
+  motionSensorVal = digitalRead(INSIDE_MOTION_SENSOR);  // read input value
+  
+  //////////////////// SEND SENSOR STATE THROUGH SERIAL ///////////////////////
   handleTempSensor(tempSensorValue);
   handleLightSensor(lightSensorValue);
+  
+    //////////////////// CHECK FOR SERIAL EVENTS ///////////////////////
+  handleSerialEvent();
 }
 
 void handleSerialEvent()
@@ -28,22 +38,25 @@ void handleSerialEvent()
     incomingByte = Serial.read();
     switch (incomingByte)
     {
-      case 1:
+      case '1':
         {
           digitalWrite(INSIDE_LIGHT_LED, HIGH);
         }
         break;
-      case 2:
+        
+      case '2':
         {
           digitalWrite(INSIDE_LIGHT_LED, LOW);
         }
         break;
-      case 3:
+        
+      case '3':
         {
           
         }
         break;
-      case 4:
+        
+      case '4':
         {
           
         }
@@ -54,6 +67,28 @@ void handleSerialEvent()
   }
 }
 
+void handleMotionSensor(DIGITAL value)
+{
+  if (value == HIGH)
+  {
+    motionSensorCurrentstate = true;
+    if (motionSensorPreviousstate != motionSensorCurrentstate)
+    {
+      Serial.println(O_MOTION_SENSOR_ON);
+    }
+
+  }
+  else
+  {
+    motionSensorCurrentstate = false;
+    if (motionSensorPreviousstate != motionSensorCurrentstate)
+    {
+      Serial.println(O_MOTION_SENSOR_OFF);
+    }
+  }
+  motionSensorPreviousstate = motionSensorCurrentstate;
+}
+
 void handleLightSensor(DIGITAL value)
 {
   if (value == HIGH)
@@ -61,15 +96,15 @@ void handleLightSensor(DIGITAL value)
     lightSensorCurrentstate = true;
     if (lightSensorPreviousstate != lightSensorCurrentstate)
     {
-      Serial.println("I_LIGHT_SENSORON");
+      Serial.println(I_LIGHT_SENSOR_HIGH);
     }
   }
   else
   {
-    motionSensorCurrentstate = false;
+    lightSensorCurrentstate = false;
     if (lightSensorPreviousstate != lightSensorCurrentstate)
     {
-      Serial.println("I_LIGHT_SENSOROFF");
+      Serial.println(v);
     }
   }
   lightSensorPreviousstate = lightSensorCurrentstate;

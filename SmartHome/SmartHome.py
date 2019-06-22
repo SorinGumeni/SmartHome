@@ -7,7 +7,7 @@ from Common import SerialSettings
 def main():
     appManager = AppManager()
     clientSerialMC1 = SerialSub.SerialSub(SerialSettings.MC1_SERIAL_PORT_ADDRESS, appManager)
-    clientSerialMC2 = SerialSu.SerialSub(SerialSettings.MC2_SERIAL_PORT_ADDRESS, appManager)
+    clientSerialMC2 = SerialSub.SerialSub(SerialSettings.MC2_SERIAL_PORT_ADDRESS, appManager)
     clientMQTT      = MqttSub.MqttSub(appManager)
 
     try:
