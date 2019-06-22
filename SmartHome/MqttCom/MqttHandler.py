@@ -18,6 +18,9 @@ class MqttHandler:
             self.m_oAppMngr.setSecurityState(receivedSecurityState)
         elif a_sEvent.topic == 'outside/screenshot':
             self.m_oAppMngr.takeFrontCameraSnap()
+        elif a_sEvent.topic == 'inside/light':
+            receivedLedState = a_sEvent.payload
+            self.m_oAppMngr.setInsideLedState(receivedLedState)
         else:
             print('invalid topic received')
 

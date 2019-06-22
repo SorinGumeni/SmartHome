@@ -9,9 +9,20 @@ class SerialHandler:
     def __init__(self, a_oAppMngr):
         self.m_oAppMngr = a_oAppMngr #Init class member
 
+    def removeDigits(self, a_sString):
+        stringWODigits = ''.join(i for i in a_sString if not i.isdigit())
+        return stringWODigits
+
+    def keepOnlyDigits(self, a_sString):
+        onlyDigitString = ''.join(i for i in a_sString if is i.isdigit())
+        return onlyDigitString    
+
     def handleEvent(self, a_sEvent):
         print('Handle serial event: ' + a_sEvent)
+        
         a_sEvent = a_sEvent.strip()
+        temp = a_sEvent
+        a_sEvent = removeDigits(a_sEvent)
 
         if a_sEvent == SerialSettings.SSE_RX_OUTSIDE_SENSOR_ON:
             print('SSE_RX_OUTSIDE_SENSOR_ON event received')
@@ -28,6 +39,12 @@ class SerialHandler:
         elif a_sEvent == SerialSettings.SSE_RX_OUTSIDE_LIGHT_SENSOR_OFF:
             print('SSE_RX_OUTSIDE_LIGHT_SENSOR_OFF event received')
             self.m_oAppMngr.handleOutsideLightSensor('LOW')
+
+        elif a_sEvent == SerialSettings.SSE_RX_INSIDE_TEMP_VAL:
+            temp = keepOnlyDigits(temp)
+            value = temp.map {it.toString().toInt()}
+            print('SSE_RX_INSIDE_TEMP_VAL event received' + temp)
+            self.m_oAppMngr.handleInsideTempSensor(value)
 
         else:
             print('Unknown serial event received' + a_sEvent)

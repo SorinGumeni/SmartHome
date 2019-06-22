@@ -21,9 +21,13 @@ class AppManager:
 
     def __init__(self):
         self.m_MC1SerialTx = SerialPub.SerialPub(SerialSettings.MC1_SERIAL_PORT_ADDRESS)
+        self.m_MC2SerialTx = SerialPub.SerialPub(SerialSettings.MC2_SERIAL_PORT_ADDRESS)
         self.m_sendEmailAdress = "gumeni.sorin@yahoo.com"
         self.m_fIsSecurityEnabled = False
         self.m_fIsOutsideAutoLightEnabled = False
+        self.m_fIsInsideAutoLightEnabled  = False
+        self.m_fUserWarmTempMode = False
+        self.m_iUserDesiredTemp = 23
 
     def sendEmail(self, a_sendEmailAddress, a_sMailSubject):
         print ('sendEmail function ' + a_sendEmailAddress)
@@ -45,6 +49,7 @@ class AppManager:
         print ('email sent')
 
     def alarmSystemActivated(self):
+        
         if True == self.m_fIsSecurityEnabled:
             print('alarmSystemActivated')
             self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_BUZZER_ON)
@@ -55,6 +60,7 @@ class AppManager:
             print('alarmSystemActivated m_fIsSecurityEnabled false')
 
     def alarmSystemDeactivated(self):
+        
         if True == self.m_fIsSecurityEnabled:
             print('alarmSystemDeactivated')
             self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_BUZZER_OFF)
@@ -64,6 +70,7 @@ class AppManager:
 
     def setOutsideLedState(self, a_fLedState):
         print('setOutsideLedState a_fLedState ' + a_fLedState)
+        
         if ('ON' == a_fLedState):
             self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_ON)
             self.m_fIsOutsideAutoLightEnabled = False
@@ -74,6 +81,20 @@ class AppManager:
             self.m_fIsOutsideAutoLightEnabled = True
         else :
             print('setOutsideLedState unknown state received a_fLedState' +a_fLedState)
+
+    def setInsideLedState(self, a_fLedState):
+        print('setOutsideLedState a_fLedState ' + a_fLedState)
+        
+        if ('ON' == a_fLedState):
+            self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_LIGHT_LED_ON)
+            self.m_fIsInsideAutoLightEnabled = False
+        elif ('OFF' == a_fLedState):
+            self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_LIGHT_LED_OFF)
+            self.m_fIsInsideAutoLightEnabled = False
+        elif('AUTO' == a_fLedState):
+            self.m_fIsInsideAutoLightEnabled = True
+        else :
+            print('setOutsideLedState unknown state received a_fLedState' +a_fLedState)            
 
     def setSecurityState(self, a_fSecurityState):
         if ('ON' == a_fSecurityState):
@@ -97,3 +118,32 @@ class AppManager:
                 print('handleOutsideLightSensor unknown state received a_fSensorState' + a_fSensorState)
         else:
              print('handleOutsideLightSensor m_fIsOutsideAutoLightEnabled false')
+
+    def handleInsideLightSensor(self, a_fSensorState):
+
+        if( True == self.m_fIsInsideAutoLightEnabled ):
+            print('handleInsideLightSensor a_fSensorState ' + a_fSensorState)
+            if ('HIGH' == a_fSensorState):
+                self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_MOTION_LED_ON)
+            elif ('LOW' == a_fSensorState):
+                self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_MOTION_LED_OFF)
+            else:
+                print('handleInsideLightSensor unknown state received a_fSensorState' + a_fSensorState)
+        else:
+             print('handleInsideLightSensor m_fIsInsideAutoLightEnabled false')             
+
+    def handleInsideTempSensor(selfm a_iTempValue)
+        print('handleInsideTempSensor a_iTempValue = '+ a_iTempValue +' m_fUserWarmTempMode = ' + m_fUserWarmTempMode )
+        
+        if ( False == m_fUserWarmTempMode):
+            if( m_iUserDesiredTemp < a_iTempValue ):
+                self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_VENT_ON)
+            else:
+                self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_VENT_OFF)
+        else:
+            if( m_iUserDesiredTemp > a_iTempValue ):
+                self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_HEAT_ON)
+            else:
+                self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_HEAT_OFF)
+
+
