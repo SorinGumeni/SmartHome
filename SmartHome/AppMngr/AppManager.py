@@ -147,4 +147,16 @@ class AppManager:
             else:
                 self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_HEAT_OFF)
 
+    def setThermostatState(self, a_sThermoState):
+        print('setThermostatState a_sThermoState = ' + a_sThermoState)
 
+        if('COOL' == a_sThermoState):
+            self.m_fUserWarmTempMode = False
+        elif('HEAT' == a_sThermoState):
+            self.m_fUserWarmTempMode = True
+        else:
+            print('setThermostatState invalid state received a_sThermoState = ' + a_sThermoState)
+    
+    def setUserDesiredTemp(self, tempValue):
+        print('setUserDesiredTemp ' + str(tempValue))
+        self.m_iUserDesiredTemp = tempValue

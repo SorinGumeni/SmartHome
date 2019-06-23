@@ -6,6 +6,9 @@ var username = '';
 var password = '';
 var message, client;
 var topic;
+var green = "rgb(50, 205, 50)";
+var red   = "rgb(220, 20, 60)";
+var grey  = "rgb(128, 128, 128)";
 
 function onConnectionLost(responseObject) {
     if (responseObject.errorCode !== 0) {
@@ -32,11 +35,11 @@ function connectMQTT() {
     console.log("Connecting to server");
     client = new Paho.MQTT.Client(ip, Number(port), "Client1");
     client.onConnectionLost = onConnectionLost;
+    client.onMessageArrived = onMessageArrived;
     client.on_connect=on_connect;
     client.connect({
         userName: username,
         password: password,
-        //useSSL: usessl, dont use it does not connect to the server
         onSuccess: onConnect,
         onFailure: onFailure
     });
@@ -47,14 +50,63 @@ function onFailure(responseObject)
   console.log("onFailure errorCode/errorMessage: " + responseObject.errorCode + "/" + responseObject.errorMessage);
 }
 
+function onMessageArrived(message) {
+  console.log("onMessageArrived: topic:"+ message.destinationName +" message:"+message.payloadString);
+  switch (message.destinationName)
+  {
+    case "webOLight":
+      {
+          if ("OFF" == message.payloadString)
+          {
+            document.getElementById("oLightActive").style.backgroundColor = green;
+            document.getElementById("oLightActive").textContent = "ON";
+          }
+          else
+          {
+            document.getElementById("oLightActive").style.backgroundColor = red;
+            document.getElementById("oLightActive").textContent = "OFF";
+          }
+      }
+      break;
+    case "webILight":
+      {
+        if ("OFF" == message.payloadString)
+        {
+          document.getElementById("iLightActive").style.backgroundColor = green;
+          document.getElementById("iLightActive").textContent = "ON";
+        }
+        else
+        {
+          document.getElementById("iLightActive").style.backgroundColor = red;
+          document.getElementById("iLightActive").textContent = "OFF";
+        }
+      }
+      break;
+    case "iTemperature":
+      {
+        document.getElementById("currentTempVal").value = message.payloadString;
+
+      }
+      break;
+  }
+}
+
+function mqttPublish(message,topic)
+{
+  console.log("Publish topic: "+topic+" message: "+message);
+  message = new Paho.MQTT.Message(message);
+  message.destinationName = topic;
+  client.send(message);
+}
+
 function onConnect() 
 {
     console.log("Connected to server");
-    message = new Paho.MQTT.Message(message);
-    message.destinationName = topic;
-    client.send(message);
-    client.disconnect();
-  }
+    client.subscribe("iTemperature");
+    client.subscribe("webILight");
+    client.subscribe("webOLight");
+}
+
 function GetColorCode(elementID)
 {
     var element = document.getElementById(elementID);
@@ -67,11 +119,6 @@ function GetColorCode(elementID)
 function ChangeColor(flag)
 {
     var colorCode = GetColorCode(flag);
-
-    var green = "rgb(50, 205, 50)";
-    var red   = "rgb(220, 20, 60)";
-    var grey  = "rgb(128, 128, 128)";
- 
     switch (flag)
     {
         case "oLightActive" :
@@ -79,7 +126,7 @@ function ChangeColor(flag)
         {
           topic = "outside/light";
           message = "ON";
-          connectMQTT();
+          mqttPublish(message,topic);
           document.getElementById("oLightActive").style.backgroundColor = red;
           document.getElementById("oLightActive").textContent = "OFF";
           document.getElementById("oLightAutomat").style.backgroundColor = grey;
@@ -90,7 +137,7 @@ function ChangeColor(flag)
         {
           topic = "outside/light";
           message = "OFF";
-          connectMQTT();
+          mqttPublish(message,topic);
           document.getElementById("oLightActive").style.backgroundColor = green;
           document.getElementById("oLightActive").textContent = "ON";
           document.getElementById("oLightAutomat").style.opacity =  0.6;
@@ -103,10 +150,10 @@ function ChangeColor(flag)
         {
           topic = "outside/light";
           message = "AUTO";
-          connectMQTT();
+          mqttPublish(message,topic);
           document.getElementById("oLightAutomat").style.backgroundColor = "orange";
-          document.getElementById("oLightActive").style.backgroundColor = green;
-          document.getElementById("oLightActive").textContent = "ON";
+          //document.getElementById("oLightActive").style.backgroundColor = green;
+          //document.getElementById("oLightActive").textContent = "ON";
           document.getElementById("oLightAutomat").style.opacity = 1;
           document.getElementById("oLightActive").style.opacity =  0.6;
         }
@@ -114,7 +161,7 @@ function ChangeColor(flag)
         {
           topic = "outside/light";
           message = "OFF";
-          connectMQTT();
+          mqttPublish(message,topic);
           document.getElementById("oLightAutomat").style.backgroundColor = grey;
           document.getElementById("oLightAutomat").style.opacity =  0.6;
           document.getElementById("oLightActive").style.opacity = 1;
@@ -128,7 +175,7 @@ function ChangeColor(flag)
           document.getElementById("oSecurity").textContent = "OFF";
           topic = "outside/security";
           message = "ON";
-          connectMQTT();
+          mqttPublish(message,topic);
         }
         else
         {
@@ -143,7 +190,7 @@ function ChangeColor(flag)
         {
           topic = "outside/screenshot";
           message = "ON";
-          connectMQTT();
+          mqttPublish(message,topic);
         }
         break;
 
@@ -152,7 +199,7 @@ function ChangeColor(flag)
         {
           topic = "inside/light";
           message = "ON";
-          connectMQTT();
+          mqttPublish(message,topic);
           document.getElementById("iLightActive").style.backgroundColor = red;
           document.getElementById("iLightActive").textContent = "OFF";
           document.getElementById("iLightAutomat").style.backgroundColor = grey;
@@ -163,7 +210,7 @@ function ChangeColor(flag)
         {
           topic = "inside/light";
           message = "OFF";
-          connectMQTT();
+          mqttPublish(message,topic);
           document.getElementById("iLightActive").style.backgroundColor = green;
           document.getElementById("iLightActive").textContent = "ON";
           document.getElementById("iLightAutomat").style.opacity =  0.6;
@@ -176,10 +223,10 @@ function ChangeColor(flag)
         {
           topic = "inside/light";
           message = "AUTO";
-          connectMQTT();
+          mqttPublish(message,topic);
           document.getElementById("iLightAutomat").style.backgroundColor = "orange";
-          document.getElementById("iLightActive").style.backgroundColor = green;
-          document.getElementById("iLightActive").textContent = "ON";
+          //document.getElementById("iLightActive").style.backgroundColor = green;
+          //document.getElementById("iLightActive").textContent = "ON";
           document.getElementById("iLightAutomat").style.opacity = 1;
           document.getElementById("iLightActive").style.opacity =  0.6;
         }
@@ -187,7 +234,7 @@ function ChangeColor(flag)
         {
           topic = "inside/light";
           message = "OFF";
-          connectMQTT();
+          mqttPublish(message,topic);
           document.getElementById("iLightAutomat").style.backgroundColor = grey;
           document.getElementById("iLightAutomat").style.opacity =  0.6;
           document.getElementById("iLightActive").style.opacity = 1;
@@ -199,8 +246,8 @@ function ChangeColor(flag)
           if (colorCode == "rgb(128, 128, 128)")
           {
           topic = "inside/thermostat";
-          message = "COOL";
-          connectMQTT();
+          message = "HEAT";
+          mqttPublish(message,topic);
           document.getElementById("iHeating").style.backgroundColor = red;
           document.getElementById("iHeating").style.opacity = 1;
           document.getElementById("iCooling").style.backgroundColor = grey;
@@ -214,8 +261,8 @@ function ChangeColor(flag)
           if (colorCode == "rgb(128, 128, 128)")
          {
             topic = "inside/thermostat";
-            message = "HEAT";
-            connectMQTT();
+            message = "COOL";
+            mqttPublish(message,topic);
             document.getElementById("iCooling").style.backgroundColor = "blue";
             document.getElementById("iCooling").style.opacity = 1;
             document.getElementById("iHeating").style.backgroundColor = grey;
@@ -234,7 +281,7 @@ function wcqib_refresh_quantity_increments()
         var c = jQuery(b);
         c.addClass("buttons_added"), c.children().first().before('<input type="button" value="-" class="minus" />'), c.children().last().after('<input type="button" value="+" class="plus" />')
     })
-    console.log("Increment");
+    
 }
 String.prototype.getDecimals || (String.prototype.getDecimals = function() {
     var a = this,
@@ -250,11 +297,13 @@ String.prototype.getDecimals || (String.prototype.getDecimals = function() {
         c = parseFloat(a.attr("max")),
         d = parseFloat(a.attr("min")),
         e = a.attr("step");
-        
     b && "" !== b && "NaN" !== b || (b = 0), "" !== c && "NaN" !== c || (c = ""), "" !== d && "NaN" !== d || 
     (d = 0), "any" !== e && "" !== e && void 0 !== e && "NaN" !== parseFloat(e) || 
     (e = 1), jQuery(this).is(".plus") ? c && b >= c ? a.val(c) : 
     a.val((b + parseFloat(e)).toFixed(e.getDecimals())) : 
     d && b <= d ? a.val(d) : 
     b > 0 && a.val((b - parseFloat(e)).toFixed(e.getDecimals())), a.trigger("change")
+    topic = "inside/thermostat/desiredTemp";
+    message = document.getElementById("setTempVal").value;
+    mqttPublish(message,topic);
 });
