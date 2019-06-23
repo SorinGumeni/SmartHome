@@ -130,7 +130,7 @@ function onConnect()
 {
     console.log("Connected to server");
     message = new Paho.MQTT.Message(message);
-    message.destinationName =topic;
+    message.destinationName = topic;
     client.send(message);
     client.disconnect();
   }
@@ -156,36 +156,36 @@ function ChangeColor(flag)
         case "oLightActive" :
         if(colorCode == "rgb(50, 205, 50)")
         {
+          topic = "outside/light";
+          message = "ON";
+          connectMQTT();
           document.getElementById("oLightActive").style.backgroundColor = red;
           document.getElementById("oLightActive").textContent = "OFF";
           document.getElementById("oLightAutomat").style.backgroundColor = grey;
           document.getElementById("oLightAutomat").style.opacity =  0.6;
           document.getElementById("oLightActive").style.opacity = 1;
-          topic = "outside/light";
-          message = "ON";
-          connectMQTT();
         }
         else
         {
+          topic = "outside/light";
+          message = "OFF";
+          connectMQTT();
           document.getElementById("oLightActive").style.backgroundColor = green;
           document.getElementById("oLightActive").textContent = "ON";
           document.getElementById("oLightAutomat").style.opacity =  0.6;
           document.getElementById("oLightActive").style.opacity = 1;
-          topic = "outside/light";
-          message = "OFF";
-          connectMQTT();
         }
         break;
 
         case "oLightAutomat" :
         if(colorCode == "rgb(128, 128, 128)")
         {
-          document.getElementById("oLightAutomat").style.backgroundColor = "orange";
-          document.getElementById("oLightActive").style.backgroundColor = green;
-          document.getElementById("oLightActive").textContent = "ON";
           topic = "outside/light";
           message = "AUTO";
           connectMQTT();
+          document.getElementById("oLightAutomat").style.backgroundColor = "orange";
+          document.getElementById("oLightActive").style.backgroundColor = green;
+          document.getElementById("oLightActive").textContent = "ON";
           document.getElementById("oLightAutomat").style.opacity = 1;
           document.getElementById("oLightActive").style.opacity =  0.6;
         }
@@ -197,41 +197,6 @@ function ChangeColor(flag)
           document.getElementById("oLightAutomat").style.backgroundColor = grey;
           document.getElementById("oLightAutomat").style.opacity =  0.6;
           document.getElementById("oLightActive").style.opacity = 1;
-        }
-        break;
-
-        case "iLightActive" :
-        if(colorCode == "rgb(50, 205, 50)")
-        {
-          document.getElementById("iLightActive").style.backgroundColor = red;
-          document.getElementById("iLightActive").textContent = "OFF";
-          document.getElementById("iLightAutomat").style.backgroundColor = grey;
-          document.getElementById("iLightAutomat").style.opacity =  0.6;
-          document.getElementById("iLightActive").style.opacity = 1;
-        }
-        else
-        {
-          document.getElementById("iLightActive").style.backgroundColor = green;
-          document.getElementById("iLightActive").textContent = "ON";
-          document.getElementById("iLightAutomat").style.opacity =  0.6;
-          document.getElementById("iLightActive").style.opacity = 1;
-        }
-        break;
-
-        case "iLightAutomat" :
-        if(colorCode == "rgb(128, 128, 128)")
-        {
-          document.getElementById("iLightAutomat").style.backgroundColor = "orange";
-          document.getElementById("iLightActive").style.backgroundColor = green;
-          document.getElementById("iLightActive").textContent = "ON";
-          document.getElementById("iLightAutomat").style.opacity = 1;
-          document.getElementById("iLightActive").style.opacity =  0.6;
-        }
-        else
-        {
-          document.getElementById("iLightAutomat").style.backgroundColor = grey;
-          document.getElementById("iLightAutomat").style.opacity =  0.6;
-          document.getElementById("iLightActive").style.opacity = 1;
         }
         break;
 
@@ -260,6 +225,83 @@ function ChangeColor(flag)
           connectMQTT();
         }
         break;
+
+        case "iLightActive" :
+        if(colorCode == "rgb(50, 205, 50)")
+        {
+          topic = "inside/light";
+          message = "ON";
+          connectMQTT();
+          document.getElementById("iLightActive").style.backgroundColor = red;
+          document.getElementById("iLightActive").textContent = "OFF";
+          document.getElementById("iLightAutomat").style.backgroundColor = grey;
+          document.getElementById("iLightAutomat").style.opacity =  0.6;
+          document.getElementById("iLightActive").style.opacity = 1;
+        }
+        else
+        {
+          topic = "inside/light";
+          message = "OFF";
+          connectMQTT();
+          document.getElementById("iLightActive").style.backgroundColor = green;
+          document.getElementById("iLightActive").textContent = "ON";
+          document.getElementById("iLightAutomat").style.opacity =  0.6;
+          document.getElementById("iLightActive").style.opacity = 1;
+        }
+        break;
+
+        case "iLightAutomat" :
+        if(colorCode == "rgb(128, 128, 128)")
+        {
+          topic = "inside/light";
+          message = "AUTO";
+          connectMQTT();
+          document.getElementById("iLightAutomat").style.backgroundColor = "orange";
+          document.getElementById("iLightActive").style.backgroundColor = green;
+          document.getElementById("iLightActive").textContent = "ON";
+          document.getElementById("iLightAutomat").style.opacity = 1;
+          document.getElementById("iLightActive").style.opacity =  0.6;
+        }
+        else
+        {
+          topic = "inside/light";
+          message = "OFF";
+          connectMQTT();
+          document.getElementById("iLightAutomat").style.backgroundColor = grey;
+          document.getElementById("iLightAutomat").style.opacity =  0.6;
+          document.getElementById("iLightActive").style.opacity = 1;
+        }
+        break;
+
+        case "iHeating":
+        {
+          if (colorCode == "rgb(128, 128, 128)")
+          {
+          topic = "inside/thermostat";
+          message = "COOL";
+          connectMQTT();
+          document.getElementById("iHeating").style.backgroundColor = red;
+          document.getElementById("iHeating").style.opacity = 1;
+          document.getElementById("iCooling").style.backgroundColor = grey;
+          document.getElementById("iCooling").style.opacity = 0.6;
+          }
+        }
+        break;
+
+        case "iCooling":
+        {
+          if (colorCode == "rgb(128, 128, 128)")
+         {
+            topic = "inside/thermostat";
+            message = "HEAT";
+            connectMQTT();
+            document.getElementById("iCooling").style.backgroundColor = "blue";
+            document.getElementById("iCooling").style.opacity = 1;
+            document.getElementById("iHeating").style.backgroundColor = grey;
+            document.getElementById("iHeating").style.opacity = 0.6;
+          }
+        }
+        break;
     }
 }
 
@@ -281,6 +323,12 @@ function ChangeColor(flag)
                 <span class="label control">INSIDE LIGHT</span>
             </h1>
         </th>
+        <th >
+          <h1 style="font-size: 16px;position: relative;top: 50px;left: 135px;width: 200px;height: 30px;font-weight: bold;
+              font-family: "Lucida Console", Monaco, monospace;" >
+              <span class="label control">THERMOSTAT</span>
+          </h1>
+      </th>        
     </tr>
     <tr>
         <th>
@@ -295,6 +343,12 @@ function ChangeColor(flag)
             <button class="button" id="iLightAutomat" style="color: white;background-color: grey; opacity: 0.6; filter: alpha(opacity=60); /* For IE8 and earlier */" onclick="ChangeColor(this.id);">AUTO</button>
             </div>
         </th>
+        <th>
+          <div class="btn-group" style="position: relative;top: 50px;left: 150px">
+          <button class="button" id="iCooling"  style="background-color: blue;" onclick="ChangeColor(this.id);">COOL</button>
+          <button class="button" id="iHeating" style="color: white;background-color: grey; opacity: 0.6; filter: alpha(opacity=60); /* For IE8 and earlier */" onclick="ChangeColor(this.id);">HEAT</button>
+          </div>
+      </th>
     </tr>
     <tr>
         <th >

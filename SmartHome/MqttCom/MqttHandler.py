@@ -9,7 +9,7 @@ class MqttHandler:
         self.m_oAppMngr = a_oAppMngr #Init class member
 
     def handleEvent(self, a_sEvent):
-        print('Handle mqtt event on topic: '+a_sEvent.topic+' with message: '+a_sEvent.payload)
+        print('Handle mqtt event on topic: '+ a_sEvent.topic + ' with message: ' + a_sEvent.payload)
         if a_sEvent.topic == 'outside/light':
             receivedLedState = a_sEvent.payload
             self.m_oAppMngr.setOutsideLedState(receivedLedState)
