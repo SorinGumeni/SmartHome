@@ -24,7 +24,7 @@ class MqttHandler:
         elif a_sEvent.topic == 'inside/thermostat':
             thermostatState = a_sEvent.payload
             self.m_oAppMngr.setThermostatState(thermostatState)
-        elif a_sEvent.topic = 'inside/thermostat/desiredTemp':
+        elif a_sEvent.topic == 'inside/thermostat/desiredTemp':
             tempValue = a_sEvent.payload
             self.m_oAppMngr.setUserDesiredTemp(tempValue)   
         else:

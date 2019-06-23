@@ -46,11 +46,11 @@ class SerialHandler:
             value = int(temp)            
             self.m_oAppMngr.handleInsideTempSensor(value)
         
-        elif a_sEvent == SSE_RX_INSIDE_LIGHT_SENSOR_ON:
+        elif a_sEvent == SerialSettings.SSE_RX_INSIDE_LIGHT_SENSOR_ON:
             print('SSE_RX_INSIDE_LIGHT_SENSOR_ON event received')
             self.m_oAppMngr.handleInsideLightSensor('HIGH')
         
-        elif a_sEvent == SSE_RX_INSIDE_LIGHT_SENSOR_OFF:
+        elif a_sEvent == SerialSettings.SSE_RX_INSIDE_LIGHT_SENSOR_OFF:
             print('SSE_RX_INSIDE_LIGHT_SENSOR_OFF event received')
             self.m_oAppMngr.handleInsideLightSensor('LOW')
         

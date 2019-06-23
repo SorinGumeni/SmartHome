@@ -1,11 +1,17 @@
 #include "CommonDefines.h"
 
 DIGITAL motionSensorVal = 0;
-DIGITAL lightSensorVal = 0; 
+DIGITAL lightSensorValue = 0; 
 int tempSensorValue;
+int previousTempValue = 0 ;
 
 bool lightSensorCurrentstate  = false;
 bool lightSensorPreviousstate = false;
+
+bool motionSensorCurrentstate  = false;
+bool motionSensorPreviousstate = false;
+
+
 char incomingByte = 0;
 
 void setup() 
@@ -74,7 +80,7 @@ void handleMotionSensor(DIGITAL value)
     motionSensorCurrentstate = true;
     if (motionSensorPreviousstate != motionSensorCurrentstate)
     {
-      Serial.println(O_MOTION_SENSOR_ON);
+      Serial.println(I_MOTION_SENSOR_ON);
     }
 
   }
@@ -83,7 +89,7 @@ void handleMotionSensor(DIGITAL value)
     motionSensorCurrentstate = false;
     if (motionSensorPreviousstate != motionSensorCurrentstate)
     {
-      Serial.println(O_MOTION_SENSOR_OFF);
+      Serial.println(I_MOTION_SENSOR_OFF);
     }
   }
   motionSensorPreviousstate = motionSensorCurrentstate;
@@ -104,7 +110,7 @@ void handleLightSensor(DIGITAL value)
     lightSensorCurrentstate = false;
     if (lightSensorPreviousstate != lightSensorCurrentstate)
     {
-      Serial.println(v);
+      Serial.println(I_LIGHT_SENSOR_LOW);
     }
   }
   lightSensorPreviousstate = lightSensorCurrentstate;
@@ -116,6 +122,11 @@ void handleTempSensor(int value)
   Temp = log(((10240000/value) - 10000));
   Temp = 1 / (0.001129148 + (0.000234125 + (0.0000000876741 * Temp * Temp ))* Temp );
   Temp = Temp - 273.15;// Convert Kelvin to Celcius
-  Serial.print("I_TEMP_SESOR_VAL");
-  Serial.println(Temp);
+  int intTemp = (int) Temp;
+  if(previousTempValue != intTemp)
+  {
+    Serial.print("I_TEMP_SESOR_VAL");
+    Serial.println(intTemp);
+    previousTempValue = intTemp;
+  }
 }

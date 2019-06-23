@@ -6,6 +6,7 @@ from threading import Thread
 import SerialSettings
 import SerialSub
 import SerialPub
+import MqttPub
 import Settings
 import time
 import os
@@ -22,6 +23,7 @@ class AppManager:
     def __init__(self):
         self.m_MC1SerialTx = SerialPub.SerialPub(SerialSettings.MC1_SERIAL_PORT_ADDRESS)
         self.m_MC2SerialTx = SerialPub.SerialPub(SerialSettings.MC2_SERIAL_PORT_ADDRESS)
+        self.m_MqttPub     = MqttPub.MqttPub()
         self.m_sendEmailAdress = "gumeni.sorin@yahoo.com"
         self.m_fIsSecurityEnabled = False
         self.m_fIsOutsideAutoLightEnabled = False
@@ -54,6 +56,7 @@ class AppManager:
             print('alarmSystemActivated')
             self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_BUZZER_ON)
             self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_ON)
+            self.m_MqttPub.publish('webOLight','ON')
             sendMailThread = Thread(target = self.sendEmail, args = (self.m_sendEmailAdress, Settings.SENSOR_EMAIL_SUBJECT,))
             sendMailThread.start()
         else:
@@ -65,6 +68,7 @@ class AppManager:
             print('alarmSystemDeactivated')
             self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_BUZZER_OFF)
             self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_OFF)
+            self.m_MqttPub.publish('webOLight','OFF')
         else:
             print('alarmSystemDeactivated m_fIsSecurityEnabled false')
 
@@ -73,9 +77,11 @@ class AppManager:
         
         if ('ON' == a_fLedState):
             self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_ON)
+            self.m_MqttPub.publish('webOLight','ON')
             self.m_fIsOutsideAutoLightEnabled = False
         elif ('OFF' == a_fLedState):
             self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_OFF)
+            self.m_MqttPub.publish('webOLight','OFF')
             self.m_fIsOutsideAutoLightEnabled = False
         elif('AUTO' == a_fLedState):
             self.m_fIsOutsideAutoLightEnabled = True
@@ -87,9 +93,11 @@ class AppManager:
         
         if ('ON' == a_fLedState):
             self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_LIGHT_LED_ON)
+            self.m_MqttPub.publish('webILight','ON')
             self.m_fIsInsideAutoLightEnabled = False
         elif ('OFF' == a_fLedState):
             self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_LIGHT_LED_OFF)
+            self.m_MqttPub.publish('webILight','OFF')
             self.m_fIsInsideAutoLightEnabled = False
         elif('AUTO' == a_fLedState):
             self.m_fIsInsideAutoLightEnabled = True
@@ -112,8 +120,10 @@ class AppManager:
             print('handleOutsideLightSensor a_fSensorState ' + a_fSensorState)
             if ('HIGH' == a_fSensorState):
                 self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_ON)
+                self.m_MqttPub.publish('webOLight','ON')
             elif ('LOW' == a_fSensorState):
                 self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_OFF)
+                self.m_MqttPub.publish('webOLight','OFF')
             else:
                 print('handleOutsideLightSensor unknown state received a_fSensorState' + a_fSensorState)
         else:
@@ -125,8 +135,10 @@ class AppManager:
             print('handleInsideLightSensor a_fSensorState ' + a_fSensorState)
             if ('HIGH' == a_fSensorState):
                 self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_MOTION_LED_ON)
+                self.m_MqttPub.publish('webILight','ON')
             elif ('LOW' == a_fSensorState):
                 self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_MOTION_LED_OFF)
+                self.m_MqttPub.publish('webILight','OFF')
             else:
                 print('handleInsideLightSensor unknown state received a_fSensorState' + a_fSensorState)
         else:
@@ -135,6 +147,8 @@ class AppManager:
     def handleInsideTempSensor(self, a_iTempValue):
         print('handleInsideTempSensor a_iTempValue = '+ chr(a_iTempValue) )
         print('m_fUserWarmTempMode = ' + chr(self.m_fUserWarmTempMode) )
+        
+        self.m_MqttPub.publish('iTemperature',a_iTempValue)
         
         if ( False == self.m_fUserWarmTempMode):
             if( self.m_iUserDesiredTemp < a_iTempValue ):
