@@ -1,24 +1,34 @@
 #include "CommonDefines.h"
 
-DIGITAL motionSensorVal = 0;
-DIGITAL lightSensorValue = 0; 
+DIGITAL motionSensorVal =  0;
+DIGITAL lightSensorValue = 0;
+DIGITAL flameSensorValue = 0; 
 int tempSensorValue;
 int previousTempValue = 0 ;
 
-bool lightSensorCurrentstate  = false;
-bool lightSensorPreviousstate = false;
+bool lightSensorCurrentState  = false;
+bool lightSensorPreviousState = false;
 
-bool motionSensorCurrentstate  = false;
-bool motionSensorPreviousstate = false;
+bool motionSensorCurrentState  = false;
+bool motionSensorPreviousState = false;
+
+bool flameSensorCurrentState  = false;
+bool flameSensorPreviousstate = false;
 
 
 char incomingByte = 0;
 
 void setup() 
 {
-  pinMode(INSIDE_LIGHT_SENSOR, INPUT);// define pin as Input  sensor
+  pinMode(INSIDE_LIGHT_SENSOR,  INPUT); // define pin as Input  sensor
   pinMode(INSIDE_MOTION_SENSOR, INPUT);
-  pinMode(INSIDE_LIGHT_LED, OUTPUT);    // declare led pin as output
+  pinMode(INSIDE_FLAME_SENSOR,  INPUT);
+
+  pinMode(INSIDE_LIGHT_LED,     OUTPUT);    // declare led pin as output
+  pinMode(INSIDE_VENT_PIN,      OUTPUT);
+  pinMode(INSIDE_HEATING_PIN,   OUTPUT);
+  pinMode(INSIDE_FLAME_BUZZER,  OUTPUT);
+
   Serial.begin(9600); // Default communication rate of the Bluetooth module
 }
 
@@ -26,14 +36,17 @@ void loop()
 {
   //////////////////// READ SENSOR VALUES ///////////////////////		
   lightSensorValue = digitalRead(INSIDE_LIGHT_SENSOR);// read the sensor
-  tempSensorValue = analogRead(INSIDE_TEMP_SENSOR);
-  motionSensorVal = digitalRead(INSIDE_MOTION_SENSOR);  // read input value
+  motionSensorVal  = digitalRead(INSIDE_MOTION_SENSOR);  // read input value
+  flameSensorValue = digitalRead(INSIDE_FLAME_SENSOR);
+  
+  tempSensorValue  = analogRead(INSIDE_TEMP_SENSOR);
   
   //////////////////// SEND SENSOR STATE THROUGH SERIAL ///////////////////////
   handleTempSensor(tempSensorValue);
   handleLightSensor(lightSensorValue);
-  
-    //////////////////// CHECK FOR SERIAL EVENTS ///////////////////////
+  handleFlameSensor(flameSensorValue);
+
+  //////////////////// CHECK FOR SERIAL EVENTS ///////////////////////
   handleSerialEvent();
 }
 
@@ -58,15 +71,39 @@ void handleSerialEvent()
         
       case '3':
         {
-          
+          digitalWrite(INSIDE_VENT_PIN, HIGH);
         }
         break;
         
       case '4':
         {
-          
+          digitalWrite(INSIDE_VENT_PIN, LOW);
         }
         break;
+
+      case '5':
+        {
+          digitalWrite(INSIDE_HEATING_PIN, HIGH);
+        }
+        break;
+      case '6':
+        {
+          digitalWrite(INSIDE_HEATING_PIN, LOW);
+        }
+        break;
+
+      case '7':
+        {
+          digitalWrite(INSIDE_FLAME_BUZZER, HIGH);
+        }
+        break;
+
+      case '8':
+        {
+          digitalWrite(INSIDE_FLAME_BUZZER, LOW);
+        }
+        break;
+
       default:
         break;
     }
@@ -77,8 +114,8 @@ void handleMotionSensor(DIGITAL value)
 {
   if (value == HIGH)
   {
-    motionSensorCurrentstate = true;
-    if (motionSensorPreviousstate != motionSensorCurrentstate)
+    motionSensorCurrentState = true;
+    if (motionSensorPreviousState != motionSensorCurrentState)
     {
       Serial.println(I_MOTION_SENSOR_ON);
     }
@@ -86,34 +123,55 @@ void handleMotionSensor(DIGITAL value)
   }
   else
   {
-    motionSensorCurrentstate = false;
-    if (motionSensorPreviousstate != motionSensorCurrentstate)
+    motionSensorCurrentState = false;
+    if (motionSensorPreviousState != motionSensorCurrentState)
     {
       Serial.println(I_MOTION_SENSOR_OFF);
     }
   }
-  motionSensorPreviousstate = motionSensorCurrentstate;
+  motionSensorPreviousState = motionSensorCurrentState;
 }
 
 void handleLightSensor(DIGITAL value)
 {
   if (value == HIGH)
   {
-    lightSensorCurrentstate = true;
-    if (lightSensorPreviousstate != lightSensorCurrentstate)
+    lightSensorCurrentState = true;
+    if (lightSensorPreviousState != lightSensorCurrentState)
     {
       Serial.println(I_LIGHT_SENSOR_HIGH);
     }
   }
   else
   {
-    lightSensorCurrentstate = false;
-    if (lightSensorPreviousstate != lightSensorCurrentstate)
+    lightSensorCurrentState = false;
+    if (lightSensorPreviousState != lightSensorCurrentState)
     {
       Serial.println(I_LIGHT_SENSOR_LOW);
     }
   }
-  lightSensorPreviousstate = lightSensorCurrentstate;
+  lightSensorPreviousState = lightSensorCurrentState;
+}
+
+void handleFlameSensor(DIGITAL value)
+{
+  if (value == HIGH)
+  {
+      flameSensorCurrentState = true;
+    if (flameSensorPreviousstate != flameSensorCurrentState)
+    {
+      Serial.println(I_FLAME_SENSOR_HIGH);
+    }
+  }
+  else
+  {
+    flameSensorCurrentState = false;
+    if (flameSensorPreviousstate != flameSensorCurrentState)
+    {
+      Serial.println(I_FLAME_SENSOR_LOW);
+    }
+  }
+  flameSensorPreviousstate = flameSensorCurrentState;
 }
 
 void handleTempSensor(int value) 

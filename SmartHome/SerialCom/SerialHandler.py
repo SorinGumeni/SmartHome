@@ -53,6 +53,12 @@ class SerialHandler:
         elif a_sEvent == SerialSettings.SSE_RX_INSIDE_LIGHT_SENSOR_OFF:
             print('SSE_RX_INSIDE_LIGHT_SENSOR_OFF event received')
             self.m_oAppMngr.handleInsideLightSensor('LOW')
+        elif a_sEvent == SerialSettings.SSE_RX_INSIDE_FLAME_SENSOR_ON:
+            print('SSE_RX_INSIDE_FLAME_SENSOR_ON event received')
+            self.m_oAppMngr.handleInsideFlameSensor('HIGH')   
+        elif a_sEvent == SerialSettings.SSE_RX_INSIDE_FLAME_SENSOR_OFF:
+            print('SSE_RX_INSIDE_FLAME_SENSOR_OFF event received')
+            self.m_oAppMngr.handleInsideFlameSensor('LOW')                   
         
         else:
             print('Unknown serial event received' + a_sEvent)

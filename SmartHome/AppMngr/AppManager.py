@@ -142,7 +142,20 @@ class AppManager:
             else:
                 print('handleInsideLightSensor unknown state received a_fSensorState' + a_fSensorState)
         else:
-             print('handleInsideLightSensor m_fIsInsideAutoLightEnabled false')             
+             print('handleInsideLightSensor m_fIsInsideAutoLightEnabled false')
+
+    def handleInsideFlameSensor(self, a_fSensorState):
+
+        print('handleInsideFlameSensor a_fSensorState ' + a_fSensorState)
+        if ('HIGH' == a_fSensorState):
+            self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_BUZZER_ON)
+            self.m_MqttPub.publish('webIFlame','ON')
+        elif ('LOW' == a_fSensorState):
+            self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_BUZZER_OFF)
+            self.m_MqttPub.publish('webIFlame','OFF')
+        else:
+            print('handleInsideFlameSensor unknown state received a_fSensorState' + a_fSensorState)
+                         
 
     def handleInsideTempSensor(self, a_iTempValue):
         print('handleInsideTempSensor a_iTempValue = '+ chr(a_iTempValue) )

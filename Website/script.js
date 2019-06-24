@@ -183,7 +183,7 @@ function ChangeColor(flag)
           document.getElementById("oSecurity").textContent = "ON";
           topic = "outside/security";
           message = "OFF";
-          connectMQTT();
+          mqttPublish(message,topic);
         }
         break;
         case "oScreenshot":
