@@ -57,6 +57,7 @@ class AppManager:
             self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_BUZZER_ON)
             self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_ON)
             self.m_MqttPub.publish('webOLight','ON')
+            self.m_MqttPub.publish('webOMotionLed','ACTIVE')
             sendMailThread = Thread(target = self.sendEmail, args = (self.m_sendEmailAdress, Settings.SENSOR_EMAIL_SUBJECT,))
             sendMailThread.start()
         else:
@@ -69,8 +70,28 @@ class AppManager:
             self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_BUZZER_OFF)
             self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_OFF)
             self.m_MqttPub.publish('webOLight','OFF')
+            self.m_MqttPub.publish('webOMotionLed','INACTIVE')
         else:
             print('alarmSystemDeactivated m_fIsSecurityEnabled false')
+
+    def handleOutsideHallSensor(self, a_fSensorState):
+        
+        if True == self.m_fIsSecurityEnabled:
+            print('handleOutsideHallSensor')
+            if('LOW' == a_fSensorState):
+                self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_BUZZER_ON)
+                self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_ON)
+                self.m_MqttPub.publish('webOLight','ON')
+                self.m_MqttPub.publish('webOHallLed','ACTIVE')
+                sendMailThread = Thread(target = self.sendEmail, args = (self.m_sendEmailAdress, Settings.SENSOR_EMAIL_SUBJECT,))
+                sendMailThread.start()
+            else:
+                self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_BUZZER_OFF)
+                self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_OFF)
+                self.m_MqttPub.publish('webOHallLed','INACTIVE')
+                self.m_MqttPub.publish('webOLight','OFF')
+        else:
+            print('handleOutsideHallSensor m_fIsSecurityEnabled false')            
 
     def setOutsideLedState(self, a_fLedState):
         print('setOutsideLedState a_fLedState ' + a_fLedState)
@@ -150,9 +171,11 @@ class AppManager:
         if ('HIGH' == a_fSensorState):
             self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_BUZZER_ON)
             self.m_MqttPub.publish('webIFlame','ON')
+            self.m_MqttPub.publish('webOFlameLed','ACTIVE')
         elif ('LOW' == a_fSensorState):
             self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_BUZZER_OFF)
             self.m_MqttPub.publish('webIFlame','OFF')
+            self.m_MqttPub.publish('webOFlameLed','INACTIVE')
         else:
             print('handleInsideFlameSensor unknown state received a_fSensorState' + a_fSensorState)
                          

@@ -61,29 +61,61 @@
     </tr>
     <tr>
         <th >
-            <h1 style="font-size: 16px;position: relative;top: 100px;left: 45px;width: 200px;height: 30px;font-weight: bold;
+            <h1 style="font-size: 16px;position: relative;top: 50px;left: 45px;width: 200px;height: 30px;font-weight: bold;
                 font-family: "Lucida Console", Monaco, monospace;" >
                 <span class="label control">ALARM SYSTEM</span>
             </h1>
         </th>
+        <th >
+                <h1 style="font-size: 16px;position: relative;top: 50px;left: 90px;width: 200px;height: 30px;font-weight: bold;
+                    font-family: "Lucida Console", Monaco, monospace;" >
+                    <span class="label control">SENSOR STATUS</span>
+                </h1>
+            </th>
         <th>
-          <div style="position: relative;top: 65px;left: 390px;color:black;font-size: 20px;font-weight: bold;">Set Temperature</div>
-          <div class="quantity buttons_added"style="position: relative;top: 75px;left: 390px">
+          <div style="position: relative;top: 65px;left: 150px;color:black;font-size: 20px;font-weight: bold;;border-radius: 12px;background-color:#2E86C1;">Set Temperature</div>
+          <div class="quantity buttons_added"style="position: relative;top: 75px;left: 150px">
             <input type="button" value="-" class="minus" style="border-radius: 50%; font-size: 20px;">
-            <input type="number" id="setTempVal" step="1" min="10" max="30" name="quantity" value="20" title="Qty" class="input-text qty text" size="4" pattern="" inputmode="" style="font-size: 20px">
+            <input type="number" id="setTempVal" step="1" min="10" max="30" name="quantity" value="20" title="Qty" class="input-text qty text" size="4" pattern="" inputmode="" style="font-size: 20px;;border-radius: 12px;background-color:rgb(145, 194, 226);">
             <input type="button" value="+" class="plus" style="border-radius: 50%; font-size: 20px;">
             </div>
-            <div style="position: relative;top: 82px;left: 390px;color:black;font-size: 20px;font-weight: bold;">Current Temperature</div>
-            <div class="quantity buttons_added"style="position: relative;top: 80px;left: 390px">
-                <input type="number" id="currentTempVal" step="1" min="10" max="30" name="quantity" value="20" title="Qty" class="input-text qty text" size="4" pattern="" inputmode="" style="font-size: 30px;color:black">
+            <div style="position: relative;top: 82px;left: 150px;color:black;font-size: 20px;font-weight: bold;border-radius: 12px;background-color:#2E86C1;">Current Temperature</div>
+            <div class="quantity buttons_added"style="position: relative;top: 80px;left: 150px">
+                <input type="number" id="currentTempVal" step="1" min="10" max="30" name="quantity" value="20" title="Qty" class="input-text qty text" size="4" pattern="" inputmode="" style="font-size: 30px;color:black;">
             </div>
         </th>
     </tr>
     <tr>
         <th>
-            <div class="btn-group" style="position: relative;top: 100px;left: 50px;">
+            <div class="btn-group" style="position: relative;top: 7px;left: 50px;">
             <button class="button" id="oSecurity" onclick="ChangeColor(this.id);">ON</button>
             <button class="button" id="oScreenshot" style="background-color: orange;" onclick="ChangeColor(this.id);">PHOTO</button>
+            </div>
+        </th>
+        <th>
+            <div>
+                <div class="led-box" style="position: relative;top: 25px;left: 140px;">
+                        <div class="led-green" id="motionLedInactive">
+                                <div class="led-red" id="motionLedActive" style="position: relative;left: 40px;"></div>
+                        </div>  
+                </div>
+                <div style="position: relative;top: 7px;left: 40px;font-size: 15px">MOTION SENSOR</div>
+            </div>
+            <div style="position: relative;left: 10px;top: 50px;font-size: 15px">HALL SENSOR
+                    <div class="led-box"  style="position: relative;top: 15px;left: 70px;">
+                            <div class="led-green" id="hallLedInactive">
+                                    <div class="led-red" id="hallLedActive" style="position: relative;left: 40px;"></div>
+                            </div>  
+                    </div>
+                    <div style="position: relative;top: 7px;left: 40px;"></div>
+            </div>
+            <div style="position: relative;left: 10px;top: 93px;font-size: 15px">FLAME SENSOR
+                    <div class="led-box" style="position: relative;top: 0px;left: 10px;">
+                            <div class="led-green" id="flameLedInactive">
+                                    <div class="led-red" id="flameLedActive" style="position: relative;left: 40px;"></div>
+                            </div>  
+                    </div>
+                    <div style="position: relative;top: 7px;left: 40px;"></div>
             </div>
         </th>
     </tr>

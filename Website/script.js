@@ -9,6 +9,10 @@ var topic;
 var green = "rgb(50, 205, 50)";
 var red   = "rgb(220, 20, 60)";
 var grey  = "rgb(128, 128, 128)";
+var greenLedActive   = "#ABFF00";
+var greenLedInactive = "#AA0";
+var redLedActive     = "#F00";
+var redLedInactive   = "#A00";
 
 function onConnectionLost(responseObject) {
     if (responseObject.errorCode !== 0) {
@@ -88,6 +92,48 @@ function onMessageArrived(message) {
 
       }
       break;
+      case "webOMotionLed":
+          {
+            if ("ACTIVE" == message.payloadString)
+            {
+              document.getElementById("motionLedActive").style.backgroundColor = redLedActive;
+              document.getElementById("motionLedInactive").style.backgroundColor = greenLedInactive;
+            }
+            else
+            {
+              document.getElementById("motionLedActive").style.backgroundColor = redLedInactive;
+              document.getElementById("motionLedInactive").style.backgroundColor = greenLedActive;
+            }
+          }
+          break;
+        case "webOHallLed":
+          {
+            if ("ACTIVE" == message.payloadString)
+            {
+              document.getElementById("hallLedActive").style.backgroundColor = redLedActive;
+              document.getElementById("hallLedInactive").style.backgroundColor = greenLedInactive;
+            }
+            else
+            {
+              document.getElementById("hallLedActive").style.backgroundColor = redLedInactive;
+              document.getElementById("hallLedInactive").style.backgroundColor = greenLedActive;
+            }
+          }
+          break;
+        case "webOFlameLed":
+          {
+            if ("ACTIVE" == message.payloadString)
+            {
+              document.getElementById("flameLedActive").style.backgroundColor = redLedActive;
+              document.getElementById("flameLedInactive").style.backgroundColor = greenLedInactive;
+            }
+            else
+            {
+              document.getElementById("flameLedActive").style.backgroundColor = redLedInactive;
+              document.getElementById("flameLedInactive").style.backgroundColor = greenLedActive;
+            }
+          }
+          break;
   }
 }
 
@@ -105,6 +151,9 @@ function onConnect()
     client.subscribe("iTemperature");
     client.subscribe("webILight");
     client.subscribe("webOLight");
+    client.subscribe("webOFlameLed");
+    client.subscribe("webOHallLed");
+    client.subscribe("webOMotionLed");
 }
 
 function GetColorCode(elementID)
@@ -273,7 +322,13 @@ function ChangeColor(flag)
     }
 }
 
+function changeLedStatus(elementId, sensorState)
+{
+  switch (elementId)
+  {
 
+  }
+}
 
 function wcqib_refresh_quantity_increments() 
 {
