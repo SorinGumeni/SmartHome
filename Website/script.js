@@ -10,7 +10,7 @@ var green = "rgb(50, 205, 50)";
 var red   = "rgb(220, 20, 60)";
 var grey  = "rgb(128, 128, 128)";
 var greenLedActive   = "#ABFF00";
-var greenLedInactive = "#AA0";
+var greenLedInactive = "#669900";
 var redLedActive     = "#F00";
 var redLedInactive   = "#A00";
 
