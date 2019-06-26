@@ -238,6 +238,7 @@ class AppManager:
         if emailAddr in open('emailList.txt').read():
             print("email already in list")
         else:
+            self.m_sendEmailAdress.append(emailAddr)
             writer = open(Settings.EMAIL_LIST_PATH, "a")
             writer.write(emailAddr)
             writer.write("\n")
