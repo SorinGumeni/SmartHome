@@ -91,11 +91,12 @@
             <button class="button" id="oSecurity" onclick="ChangeColor(this.id);">ON</button>
             <button class="button" id="oScreenshot" style="background-color: orange;" onclick="ChangeColor(this.id);">PHOTO</button>
             </div>
-             <div style="position: relative;left: 25px;top: 45px;">
-                    Add Email:<br>
+             <span style="position: relative;left: 25px;top: 25px;">
+                    Add Email<br>
                     <input type="text" id="emailTextbox" name="mail"><br>
-                    <input type="submit" value="Submit" onclick="sendEmailAdress();">
-            </div>   
+                    <input type="submit" id="addEmail" value="Submit" onclick="sendEmailAdress(this.id);">
+                    <input type="submit" id="removeEmail" value="Remove" onclick="sendEmailAdress(this.id);">
+             </span>   
         </th>
         <th>
             <div>

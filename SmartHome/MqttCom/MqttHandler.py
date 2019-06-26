@@ -27,9 +27,12 @@ class MqttHandler:
         elif a_sEvent.topic == 'inside/thermostat/desiredTemp':
             tempValue = a_sEvent.payload
             self.m_oAppMngr.setUserDesiredTemp(tempValue)
-        elif a_sEvent.topic == 'emailAddress':
+        elif a_sEvent.topic == 'addEmailAddress':
             emailAddr = a_sEvent.payload
-            self.m_oAppMngr.addEmailAddress(emailAddr)    
+            self.m_oAppMngr.addEmailAddress(emailAddr)
+        elif a_sEvent.topic == 'removeEmailAddress':
+            emailAddr = a_sEvent.payload
+            self.m_oAppMngr.removeEmailAddress(emailAddr)                  
                           
         else:
             print('invalid topic received')

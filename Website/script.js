@@ -369,19 +369,28 @@ function validateEmail(email)
     return re.test(email);
 }
 
-function sendEmailAdress()
+function sendEmailAdress(id)
 {
   emailAddr = document.getElementById("emailTextbox").value;
+  
   if(validateEmail(emailAddr))
   {
-    topic = "emailAddress";
+    if("addEmail" == id)
+    {
+      topic = "addEmailAddress";
+    }
+    else
+    {
+      topic = "removeEmailAddress";
+    }
+
     message = emailAddr;
     mqttPublish(message,topic);
     alert("Email address has been added to the notification list");
   }
   else
   {
-    alert("Incorrect email format ! Please try again .")
+    alert("Incorrect email format ! Please try again .");
   }
 
 }

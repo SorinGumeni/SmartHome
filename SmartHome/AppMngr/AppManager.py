@@ -236,10 +236,27 @@ class AppManager:
     def addEmailAddress(self, emailAddr):
 
         if emailAddr in open('emailList.txt').read():
-            print("email already in list")
+            print("email already in the list")
         else:
             self.m_sendEmailAdress.append(emailAddr)
             writer = open(Settings.EMAIL_LIST_PATH, "a")
             writer.write(emailAddr)
             writer.write("\n")
             writer.close()
+            print('email added succesfully')
+
+    def removeEmailAddress(self, emailAddr):
+
+        if emailAddr in open('emailList.txt').read():
+            
+            self.m_sendEmailAdress.remove(emailAddr)
+            writer = open(Settings.EMAIL_LIST_PATH, "w")
+            writer.writelines(self.m_sendEmailAdress)
+            writer.close()
+            print('email removed succesfully')
+        else:
+            print("email not in the list")
+            
+            writer.write(emailAddr)
+            writer.write("\n")
+            
