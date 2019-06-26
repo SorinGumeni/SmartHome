@@ -6,12 +6,16 @@ from Common import SerialSettings
 
 def main():
     appManager = AppManager()
-    clientSerial = SerialSub.SerialSub(SerialSettings.MC1_SERIAL_PORT_ADDRESS, appManager)
-    clientMQTT   = MqttSub.MqttSub(appManager)
+    clientSerialMC1 = SerialSub.SerialSub(SerialSettings.MC1_SERIAL_PORT_ADDRESS, appManager)
+    clientSerialMC2 = SerialSub.SerialSub(SerialSettings.MC2_SERIAL_PORT_ADDRESS, appManager)
+    clientMQTT      = MqttSub.MqttSub(appManager)
 
     try:
-        serialRcvThread = Thread(target = clientSerial.listen)
-        serialRcvThread.start()
+        serialRcvThreadMC1 = Thread(target = clientSerialMC1.listen)
+        serialRcvThreadMC1.start()
+
+        serialRcvThreadMC2 = Thread(target = clientSerialMC2.listen)
+        serialRcvThreadMC2.start()
 
         mqttRcvThread = Thread (target = clientMQTT.listen)
         mqttRcvThread.start()

@@ -1,0 +1,157 @@
+.label 
+{
+    color: white;
+    padding: 20px 30px;
+    font-family: "Lucida Console", Monaco, monospace;
+    outline: none;
+    color: #fff;
+    background-color: rgb(50, 205, 50);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 3px #999;
+    width: 200px;
+    height: 60px;
+}
+
+.control {background-color: #2E86C1;} 
+
+.btn-group button 
+{
+    background-color: rgb(50, 205, 50); /* Green background */
+    border: 1px solid green; /* Green border */
+    color: white; /* White text */
+    padding: 10px 24px; /* Some padding */
+    cursor: pointer; /* Pointer/hand icon */
+    width: 120px; /* Set a width if needed */
+    float: left; /* Float the buttons side by side */
+}
+
+.btn-group button:not(:last-child) 
+{
+    border-right:  none; /* Prevent double borders */
+}
+
+.button 
+{
+    padding: 12px 25px;
+    font-size: 14px;
+    width: 100px;
+    height: 40px;
+    font-weight: bold;
+    font-family: "Lucida Console", Monaco, monospace;
+    text-align: center;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    background-color: rgb(50, 205, 50);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+}
+
+.button:hover {background-color: rgb(50, 205, 50)}
+
+.button:active 
+{
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+}
+
+.quantity 
+{
+ display: inline-block; 
+}
+
+.quantity .input-text.qty 
+{
+ width: 40px;
+ height: 45px;
+ padding: 0 5px;
+ font-weight: bold;
+ text-align: center;
+ background-color: transparent;
+ border: 0px solid #efefef;
+ text-shadow: 1px rgb(0, 0, 0) ;
+}
+
+.quantity.buttons_added 
+{
+ text-align: left;
+ position: relative;
+ white-space: nowrap;
+ vertical-align: top; 
+}
+
+.quantity.buttons_added input 
+{
+ display: inline-block;
+ margin: 0;
+ vertical-align: top;
+ box-shadow: none;
+}
+
+.quantity.buttons_added .minus,
+.quantity.buttons_added .plus 
+{
+ padding: 7px 10px 8px;
+ height: 40px;
+ width: 40px;
+ box-shadow: 0 5px #999;
+ background-color: #ffffff;
+ border: 1px solid #efefef;
+ cursor:pointer;
+}
+
+.quantity.buttons_added .minus 
+{
+ border-right: 0; 
+}
+
+.quantity.buttons_added .plus 
+{
+ border-left: 0; 
+}
+
+.quantity.buttons_added .minus:hover,
+.quantity.buttons_added .plus:hover 
+{
+ background: #eeeeee; 
+}
+
+.quantity input::-webkit-outer-spin-button,
+.quantity input::-webkit-inner-spin-button
+ {
+ -webkit-appearance: none;
+ -moz-appearance: none;
+ margin: 0; 
+}
+ 
+ .quantity.buttons_added .minus:focus,
+.quantity.buttons_added .plus:focus 
+{
+ outline: none; 
+}
+
+.led-box {
+    height: 30px;
+    width: 25%;
+    margin: 10px 0;
+    float: left;
+  }
+  .led-green {
+    margin: 0 auto;
+    width: 24px;
+    height: 24px;
+    background-color:  #ABFF00; /* Green active color for Inactive use #AA0 */
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, #89FF00 0 2px 12px;
+  }
+
+  .led-red {
+    margin: 0 auto;
+    width: 24px;
+    height: 24px;
+    background-color:#A00;/* Red inactive color for active use #F00; */
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #304701 0 -1px 9px, #89FF00 0 2px 12px;
+  }

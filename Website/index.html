@@ -4,6 +4,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://fonts.googleapis.com/css?family=Cabin+Sketch&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+<script data-require="jquery@3.1.1" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<link rel="stylesheet" href="style.css" />
+<script src="script.js"></script>
 <head>
 
 <h style="text-align: left; position: relative;left:50px;top:0px;height: 30px; font-size: 70px;color:#2E86C1; text-shadow: 0 2px #000;
@@ -11,262 +14,10 @@
     <img src="house.png" alt="HTML5 Icon" style="width:128px;height:128px;">
     smart Home
 </h>
-
-<style>
-
-.label 
-{
-    color: white;
-    padding: 20px 30px;
-    font-family: "Lucida Console", Monaco, monospace;
-    outline: none;
-    color: #fff;
-    background-color: rgb(50, 205, 50);
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0 3px #999;
-    width: 200px;
-    height: 60px;
-}
-
-.control {background-color: #2E86C1;} 
-
-.btn-group button 
-{
-    background-color: rgb(50, 205, 50); /* Green background */
-    border: 1px solid green; /* Green border */
-    color: white; /* White text */
-    padding: 10px 24px; /* Some padding */
-    cursor: pointer; /* Pointer/hand icon */
-    width: 120px; /* Set a width if needed */
-    float: left; /* Float the buttons side by side */
-}
-
-.btn-group button:not(:last-child) 
-{
-    border-right:  none; /* Prevent double borders */
-}
-
-.button 
-{
-    padding: 12px 25px;
-    font-size: 14px;
-    width: 100px;
-    height: 40px;
-    font-weight: bold;
-    font-family: "Lucida Console", Monaco, monospace;
-    text-align: center;
-    cursor: pointer;
-    outline: none;
-    color: #fff;
-    background-color: rgb(50, 205, 50);
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0 9px #999;
-}
-
-.button:hover {background-color: rgb(50, 205, 50)}
-
-.button:active 
-{
-    box-shadow: 0 5px #666;
-    transform: translateY(4px);
-}
-
-</style>
 </head>
-<script>
-
-var ip = 'broker.hivemq.com';
-var port = "8000";
-var usessl = true;
-var id = (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-var username = '';
-var password = '';
-var message, client;
-var topic;
-
-function onConnectionLost(responseObject) {
-    if (responseObject.errorCode !== 0) {
-        console.log("onConnectionLost:" + responseObject.errorMessage);
-    }
-}
-
-function on_connect(client, userdata, flags, rc)
-{
-  if(rc==0)
-  {
-    client.connected_flag=true;
-    console.log("connected ok");
-  }
-  else
-  {
-    print("Bad connection return code rc="+rc);
-    client.bad_connection_flag=true;
-  }
-}
-
-function connectMQTT() {
-
-    console.log("Connecting to server");
-    client = new Paho.MQTT.Client(ip, Number(port), "Client1");
-    client.onConnectionLost = onConnectionLost;
-    client.on_connect=on_connect;
-    client.connect({
-        userName: username,
-        password: password,
-        //useSSL: usessl, dont use it does not connect to the server
-        onSuccess: onConnect,
-        onFailure: onFailure
-    });
-}
-
-function onFailure(responseObject) 
-{
-  console.log("onFailure errorCode/errorMessage: " + responseObject.errorCode + "/" + responseObject.errorMessage);
-}
-
-function onConnect() 
-{
-    console.log("Connected to server");
-    message = new Paho.MQTT.Message(message);
-    message.destinationName =topic;
-    client.send(message);
-    client.disconnect();
-  }
-function GetColorCode(elementID)
-{
-    var element = document.getElementById(elementID);
-    var style;
-    window.getComputedStyle;
-    style = window.getComputedStyle(element);
-    return style.backgroundColor;
-}
-
-function ChangeColor(flag)
-{
-    var colorCode = GetColorCode(flag);
-
-    var green = "rgb(50, 205, 50)";
-    var red   = "rgb(220, 20, 60)";
-    var grey  = "rgb(128, 128, 128)";
- 
-    switch (flag)
-    {
-        case "oLightActive" :
-        if(colorCode == "rgb(50, 205, 50)")
-        {
-          document.getElementById("oLightActive").style.backgroundColor = red;
-          document.getElementById("oLightActive").textContent = "OFF";
-          document.getElementById("oLightAutomat").style.backgroundColor = grey;
-          document.getElementById("oLightAutomat").style.opacity =  0.6;
-          document.getElementById("oLightActive").style.opacity = 1;
-          topic = "outside/light";
-          message = "ON";
-          connectMQTT();
-        }
-        else
-        {
-          document.getElementById("oLightActive").style.backgroundColor = green;
-          document.getElementById("oLightActive").textContent = "ON";
-          document.getElementById("oLightAutomat").style.opacity =  0.6;
-          document.getElementById("oLightActive").style.opacity = 1;
-          topic = "outside/light";
-          message = "OFF";
-          connectMQTT();
-        }
-        break;
-
-        case "oLightAutomat" :
-        if(colorCode == "rgb(128, 128, 128)")
-        {
-          document.getElementById("oLightAutomat").style.backgroundColor = "orange";
-          document.getElementById("oLightActive").style.backgroundColor = green;
-          document.getElementById("oLightActive").textContent = "ON";
-          topic = "outside/light";
-          message = "AUTO";
-          connectMQTT();
-          document.getElementById("oLightAutomat").style.opacity = 1;
-          document.getElementById("oLightActive").style.opacity =  0.6;
-        }
-        else
-        {
-          topic = "outside/light";
-          message = "OFF";
-          connectMQTT();
-          document.getElementById("oLightAutomat").style.backgroundColor = grey;
-          document.getElementById("oLightAutomat").style.opacity =  0.6;
-          document.getElementById("oLightActive").style.opacity = 1;
-        }
-        break;
-
-        case "iLightActive" :
-        if(colorCode == "rgb(50, 205, 50)")
-        {
-          document.getElementById("iLightActive").style.backgroundColor = red;
-          document.getElementById("iLightActive").textContent = "OFF";
-          document.getElementById("iLightAutomat").style.backgroundColor = grey;
-          document.getElementById("iLightAutomat").style.opacity =  0.6;
-          document.getElementById("iLightActive").style.opacity = 1;
-        }
-        else
-        {
-          document.getElementById("iLightActive").style.backgroundColor = green;
-          document.getElementById("iLightActive").textContent = "ON";
-          document.getElementById("iLightAutomat").style.opacity =  0.6;
-          document.getElementById("iLightActive").style.opacity = 1;
-        }
-        break;
-
-        case "iLightAutomat" :
-        if(colorCode == "rgb(128, 128, 128)")
-        {
-          document.getElementById("iLightAutomat").style.backgroundColor = "orange";
-          document.getElementById("iLightActive").style.backgroundColor = green;
-          document.getElementById("iLightActive").textContent = "ON";
-          document.getElementById("iLightAutomat").style.opacity = 1;
-          document.getElementById("iLightActive").style.opacity =  0.6;
-        }
-        else
-        {
-          document.getElementById("iLightAutomat").style.backgroundColor = grey;
-          document.getElementById("iLightAutomat").style.opacity =  0.6;
-          document.getElementById("iLightActive").style.opacity = 1;
-        }
-        break;
-
-        case "oSecurity" :
-        if(colorCode == "rgb(50, 205, 50)")
-        {
-          document.getElementById("oSecurity").style.backgroundColor = red;
-          document.getElementById("oSecurity").textContent = "OFF";
-          topic = "outside/security";
-          message = "ON";
-          connectMQTT();
-        }
-        else
-        {
-          document.getElementById("oSecurity").style.backgroundColor = green;
-          document.getElementById("oSecurity").textContent = "ON";
-          topic = "outside/security";
-          message = "OFF";
-          connectMQTT();
-        }
-        break;
-        case "oScreenshot":
-        {
-          topic = "outside/screenshot";
-          message = "ON";
-          connectMQTT();
-        }
-        break;
-    }
-}
-
-</script>
 
 <body background="img2.jpg">
-
+<script>connectMQTT();</script>
 <table>
     <tr>
         <th >
@@ -281,6 +32,12 @@ function ChangeColor(flag)
                 <span class="label control">INSIDE LIGHT</span>
             </h1>
         </th>
+        <th >
+          <h1 style="font-size: 16px;position: relative;top: 50px;left: 135px;width: 200px;height: 30px;font-weight: bold;
+              font-family: "Lucida Console", Monaco, monospace;" >
+              <span class="label control">THERMOSTAT</span>
+          </h1>
+      </th>        
     </tr>
     <tr>
         <th>
@@ -295,23 +52,80 @@ function ChangeColor(flag)
             <button class="button" id="iLightAutomat" style="color: white;background-color: grey; opacity: 0.6; filter: alpha(opacity=60); /* For IE8 and earlier */" onclick="ChangeColor(this.id);">AUTO</button>
             </div>
         </th>
+        <th>
+          <div class="btn-group" style="position: relative;top: 50px;left: 150px">
+          <button class="button" id="iCooling"  style="background-color: blue;" onclick="ChangeColor(this.id);">COOL</button>
+          <button class="button" id="iHeating" style="color: white;background-color: grey; opacity: 0.6; filter: alpha(opacity=60); /* For IE8 and earlier */" onclick="ChangeColor(this.id);">HEAT</button>
+          </div>
+      </th>
     </tr>
     <tr>
         <th >
-            <h1 style="font-size: 16px;position: relative;top: 100px;left: 45px;width: 200px;height: 30px;font-weight: bold;
+            <h1 style="font-size: 16px;position: relative;top: 50px;left: 45px;width: 200px;height: 30px;font-weight: bold;
                 font-family: "Lucida Console", Monaco, monospace;" >
                 <span class="label control">ALARM SYSTEM</span>
             </h1>
         </th>
-    </tr>
-    <tr>
+        <th >
+                <h1 style="font-size: 16px;position: relative;top: 50px;left: 90px;width: 200px;height: 30px;font-weight: bold;
+                    font-family: "Lucida Console", Monaco, monospace;" >
+                    <span class="label control">SENSOR STATUS</span>
+                </h1>
+            </th>
         <th>
-            <div class="btn-group" style="position: relative;top: 100px;left: 50px;">
-            <button class="button" id="oSecurity" onclick="ChangeColor(this.id);">ON</button>
-            <button class="button" id="oScreenshot" style="background-color: orange;" onclick="ChangeColor(this.id);">PHOTO</button>
+          <div style="position: relative;top: 65px;left: 150px;color:black;font-size: 20px;font-weight: bold;;border-radius: 12px;background-color:#2E86C1;">Set Temperature</div>
+          <div class="quantity buttons_added"style="position: relative;top: 75px;left: 150px">
+            <input type="button" value="-" class="minus" style="border-radius: 50%; font-size: 20px;">
+            <input type="number" id="setTempVal" step="1" min="10" max="30" name="quantity" value="20" title="Qty" class="input-text qty text" size="4" pattern="" inputmode="" style="font-size: 20px;;border-radius: 12px;background-color:rgb(145, 194, 226);">
+            <input type="button" value="+" class="plus" style="border-radius: 50%; font-size: 20px;">
+            </div>
+            <div style="position: relative;top: 82px;left: 150px;color:black;font-size: 20px;font-weight: bold;border-radius: 12px;background-color:#2E86C1;">Current Temperature</div>
+            <div class="quantity buttons_added"style="position: relative;top: 80px;left: 150px">
+                <input type="number" id="currentTempVal" step="1" min="10" max="30" name="quantity" value="20" title="Qty" class="input-text qty text" size="4" pattern="" inputmode="" style="font-size: 30px;color:black;">
             </div>
         </th>
     </tr>
+    <tr>
+        <th>
+            <div class="btn-group" style="position: relative;top: 7px;left: 50px;">
+            <button class="button" id="oSecurity" onclick="ChangeColor(this.id);">ON</button>
+            <button class="button" id="oScreenshot" style="background-color: orange;" onclick="ChangeColor(this.id);">PHOTO</button>
+            </div>
+             <span style="position: relative;left: 25px;top: 25px;">
+                    Add Email<br>
+                    <input type="text" id="emailTextbox" name="mail"><br>
+                    <input type="submit" id="addEmail" value="Submit" onclick="sendEmailAdress(this.id);">
+                    <input type="submit" id="removeEmail" value="Remove" onclick="sendEmailAdress(this.id);">
+             </span>   
+        </th>
+        <th>
+            <div>
+                <div class="led-box" style="position: relative;top: 25px;left: 140px;">
+                        <div class="led-green" id="motionLedInactive">
+                                <div class="led-red" id="motionLedActive" style="position: relative;left: 40px;"></div>
+                        </div>  
+                </div>
+                <div style="position: relative;top: 7px;left: 40px;font-size: 15px">MOTION SENSOR</div>
+            </div>
+            <div style="position: relative;left: 10px;top: 50px;font-size: 15px">HALL SENSOR
+                    <div class="led-box"  style="position: relative;top: 15px;left: 70px;">
+                            <div class="led-green" id="hallLedInactive">
+                                    <div class="led-red" id="hallLedActive" style="position: relative;left: 40px;"></div>
+                            </div>  
+                    </div>
+                    <div style="position: relative;top: 7px;left: 40px;"></div>
+            </div>
+            <div style="position: relative;left: 10px;top: 93px;font-size: 15px">FLAME SENSOR
+                    <div class="led-box" style="position: relative;top: 0px;left: 10px;">
+                            <div class="led-green" id="flameLedInactive">
+                                    <div class="led-red" id="flameLedActive" style="position: relative;left: 40px;"></div>
+                            </div>  
+                    </div>
+                    <div style="position: relative;top: 7px;left: 40px;"></div>
+            </div>
+        </th>
+    </tr>
+
 </table>
 </body>
 </html>
