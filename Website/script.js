@@ -362,3 +362,26 @@ String.prototype.getDecimals || (String.prototype.getDecimals = function() {
     message = document.getElementById("setTempVal").value;
     mqttPublish(message,topic);
 });
+
+function validateEmail(email) 
+{
+    var re = /\S+@\S+\.\S+/;
+    return re.test(email);
+}
+
+function sendEmailAdress()
+{
+  emailAddr = document.getElementById("emailTextbox").value;
+  if(validateEmail(emailAddr))
+  {
+    topic = "emailAddress";
+    message = emailAddr;
+    mqttPublish(message,topic);
+    alert("Email address has been added to the notification list");
+  }
+  else
+  {
+    alert("Incorrect email format ! Please try again .")
+  }
+
+}

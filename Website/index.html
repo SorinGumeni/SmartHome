@@ -87,10 +87,15 @@
     </tr>
     <tr>
         <th>
-            <div class="btn-group" style="position: relative;top: -23px;left: 50px;">
+            <div class="btn-group" style="position: relative;top: 7px;left: 50px;">
             <button class="button" id="oSecurity" onclick="ChangeColor(this.id);">ON</button>
             <button class="button" id="oScreenshot" style="background-color: orange;" onclick="ChangeColor(this.id);">PHOTO</button>
             </div>
+                <div style="position: relative;left: 20px;top: 20px;">
+                    Add Email:<br>
+                    <input type="text" id="emailTextbox" name="mail"><br>
+                    <input type="submit" value="Submit" onclick="sendEmailAdress();">
+                </div>   
         </th>
         <th>
             <div>
@@ -119,6 +124,7 @@
             </div>
         </th>
     </tr>
+
 </table>
 </body>
 </html>

@@ -17,7 +17,7 @@ class MqttHandler:
             receivedSecurityState = a_sEvent.payload
             self.m_oAppMngr.setSecurityState(receivedSecurityState)
         elif a_sEvent.topic == 'outside/screenshot':
-            self.m_oAppMngr.takeFrontDoorSnap()
+            self.m_oAppMngr.takeFrontCameraSnap()
         elif a_sEvent.topic == 'inside/light':
             receivedLedState = a_sEvent.payload
             self.m_oAppMngr.setInsideLedState(receivedLedState)
@@ -26,7 +26,11 @@ class MqttHandler:
             self.m_oAppMngr.setThermostatState(thermostatState)
         elif a_sEvent.topic == 'inside/thermostat/desiredTemp':
             tempValue = a_sEvent.payload
-            self.m_oAppMngr.setUserDesiredTemp(tempValue)   
+            self.m_oAppMngr.setUserDesiredTemp(tempValue)
+        elif a_sEvent.topic == 'emailAddress':
+            emailAddr = a_sEvent.payload
+            self.m_oAppMngr.addEmailAddress(emailAddr)    
+                          
         else:
             print('invalid topic received')
 

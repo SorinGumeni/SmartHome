@@ -232,3 +232,13 @@ class AppManager:
         print('setUserDesiredTemp ' + str(tempValue))
         self.m_iUserDesiredTemp = int(tempValue)
         self.handleInsideTempSensor(self.m_iCurrentTempValue)
+
+    def addEmailAddress(self, emailAddr):
+
+        if emailAddr in open('emailList.txt').read():
+            print("email already in list")
+        else:
+            writer = open(Settings.EMAIL_LIST_PATH, "a")
+            writer.write(emailAddr)
+            writer.write("\n")
+            writer.close()
