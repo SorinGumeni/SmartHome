@@ -103,7 +103,7 @@ void handleHallSensor(DIGITAL value)
     hallSensorCurrentState = true;
     if (hallSensorPreviousState != hallSensorCurrentState)
     {
-      Serial.println(O_HALL_SENSOR_ON);
+      Serial.println(O_HALL_SENSOR_HIGH);
     }
   }
   else
@@ -111,7 +111,7 @@ void handleHallSensor(DIGITAL value)
     hallSensorCurrentState = false;
     if (hallSensorPreviousState != hallSensorCurrentState)
     {
-      Serial.println(O_HALL_SENSOR_OFF);
+      Serial.println(O_HALL_SENSOR_LOW);
     }
   }
   hallSensorPreviousState = hallSensorCurrentState;

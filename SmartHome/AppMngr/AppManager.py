@@ -29,7 +29,8 @@ class AppManager:
         self.m_fIsOutsideAutoLightEnabled = False
         self.m_fIsInsideAutoLightEnabled  = False
         self.m_fUserWarmTempMode = False
-        self.m_iUserDesiredTemp = 23
+        self.m_iUserDesiredTemp  = 23
+        self.m_iCurrentTempValue = 20
 
     def sendEmail(self, a_sendEmailAddress, a_sMailSubject):
         print ('sendEmail function ' + a_sendEmailAddress)
@@ -185,16 +186,21 @@ class AppManager:
         print('m_fUserWarmTempMode = ' + chr(self.m_fUserWarmTempMode) )
         
         self.m_MqttPub.publish('iTemperature',a_iTempValue)
-        
+        a_iTempValue = int(a_iTempValue)
+        self.m_iCurrentTempValue = int(a_iTempValue)
         if ( False == self.m_fUserWarmTempMode):
             if( self.m_iUserDesiredTemp < a_iTempValue ):
+                print('handleInsideTempSensor VENT ON')
                 self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_VENT_ON)
             else:
+                print('handleInsideTempSensor VENT OFF')
                 self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_VENT_OFF)
         else:
             if( self.m_iUserDesiredTemp > a_iTempValue ):
+                print('handleInsideTempSensor HEAT ON')
                 self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_HEAT_ON)
             else:
+                print('handleInsideTempSensor HEAT OFF')
                 self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_HEAT_OFF)
 
     def setThermostatState(self, a_sThermoState):
@@ -202,11 +208,16 @@ class AppManager:
 
         if('COOL' == a_sThermoState):
             self.m_fUserWarmTempMode = False
+            self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_HEAT_OFF)
+            self.handleInsideTempSensor(self.m_iCurrentTempValue)
         elif('HEAT' == a_sThermoState):
             self.m_fUserWarmTempMode = True
+            self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_VENT_OFF)
+            self.handleInsideTempSensor(self.m_iCurrentTempValue)
         else:
             print('setThermostatState invalid state received a_sThermoState = ' + a_sThermoState)
     
     def setUserDesiredTemp(self, tempValue):
         print('setUserDesiredTemp ' + str(tempValue))
-        self.m_iUserDesiredTemp = tempValue
+        self.m_iUserDesiredTemp = int(tempValue)
+        self.handleInsideTempSensor(self.m_iCurrentTempValue)
