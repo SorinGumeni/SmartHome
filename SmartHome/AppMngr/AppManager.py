@@ -24,32 +24,41 @@ class AppManager:
         self.m_MC1SerialTx = SerialPub.SerialPub(SerialSettings.MC1_SERIAL_PORT_ADDRESS)
         self.m_MC2SerialTx = SerialPub.SerialPub(SerialSettings.MC2_SERIAL_PORT_ADDRESS)
         self.m_MqttPub     = MqttPub.MqttPub()
-        self.m_sendEmailAdress = "gumeni.sorin@yahoo.com"
+        self.m_sendEmailAdress = ""
+        self.getEmailAdressList()
         self.m_fIsSecurityEnabled = False
         self.m_fIsOutsideAutoLightEnabled = False
         self.m_fIsInsideAutoLightEnabled  = False
         self.m_fUserWarmTempMode = False
-        self.m_iUserDesiredTemp  = 23
+        self.m_iUserDesiredTemp  = 20
         self.m_iCurrentTempValue = 20
+        print('AppManager init finished')
 
-    def sendEmail(self, a_sendEmailAddress, a_sMailSubject):
-        print ('sendEmail function ' + a_sendEmailAddress)
-        os.system("raspistill -o pic.jpg -t 10 -n -ex auto -awb auto -w 800 -h 600")
-        server = smtplib.SMTP('smtp.gmail.com: 587')
+    def getEmailAdressList(self):
+        reader = open(Settings.EMAIL_LIST_PATH, "r")
+        self.m_sendEmailAdress = reader.readlines()
+        print(self.m_sendEmailAdress)
+        reader.close()
+                    
+    def sendEmail(self, a_sMailSubject):
+        print ('sendEmail function ')
+        os.system("raspistill -o pic.jpg -t 1 -n -ex auto -awb auto -w 800 -h 600")
+        server = smtplib.SMTP('smtp.mail.yahoo.com: 587')
         msg = MIMEMultipart()
         msg['Subject'] = a_sMailSubject
         server.ehlo
         server.starttls()
         server.ehlo
-        print('sendEmail: login to server')
-        server.login("homesecure112", "parola.1234")
-        attachment = open("/home/pi/Desktop/SmartHome/pic.jpg", "rb").read()
-        image = MIMEImage(attachment, name=os.path.basename("asd.jpg"))
+        server.login(Settings.EMAIL_USERNAME, Settings.EMAIL_PASSWORD)
+        attachment = open(Settings.EMAIL_PHOTO_PATH, "rb").read()
+        image = MIMEImage(attachment, name=os.path.basename("Photo.jpg"))
         msg.attach(image)
-        print('sendEmail: sending the email')
         text = msg.as_string()
-        server.sendmail("homesecure112@gmail.com",a_sendEmailAddress,text)
-        print ('email sent')
+        server.sendmail(Settings.EMAIL_USERNAME, self.m_sendEmailAdress,text)
+        print('email sent to:')
+        print(self.m_sendEmailAdress)
+        server.quit()
+            
 
     def alarmSystemActivated(self):
         
@@ -59,7 +68,7 @@ class AppManager:
             self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_ON)
             self.m_MqttPub.publish('webOLight','ON')
             self.m_MqttPub.publish('webOMotionLed','ACTIVE')
-            sendMailThread = Thread(target = self.sendEmail, args = (self.m_sendEmailAdress, Settings.SENSOR_EMAIL_SUBJECT,))
+            sendMailThread = Thread(target = self.sendEmail, args = (Settings.SENSOR_EMAIL_SUBJECT,))
             sendMailThread.start()
         else:
             print('alarmSystemActivated m_fIsSecurityEnabled false')
@@ -84,8 +93,9 @@ class AppManager:
                 self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_ON)
                 self.m_MqttPub.publish('webOLight','ON')
                 self.m_MqttPub.publish('webOHallLed','ACTIVE')
-                sendMailThread = Thread(target = self.sendEmail, args = (self.m_sendEmailAdress, Settings.SENSOR_EMAIL_SUBJECT,))
+                sendMailThread = Thread(target = self.sendEmail, args = (Settings.SENSOR_EMAIL_SUBJECT,))
                 sendMailThread.start()
+                
             else:
                 self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_BUZZER_OFF)
                 self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_OFF)
@@ -133,9 +143,10 @@ class AppManager:
             self.m_fIsSecurityEnabled = False
 
     def takeFrontDoorSnap(self):
-        sendMailThread = Thread(target = self.sendEmail, args = (self.m_sendEmailAdress,Settings.SNAP_EMAIL_SUBJECT,))
-        sendMailThread.start()
-
+        print('takeFrontDoorSnap')
+        sendMailThread2 = Thread(target = self.sendEmail, args = (Settings.SCREENSHOT_EMAIL_SUBJECT,))
+        sendMailThread2.start()
+        
     def handleOutsideLightSensor(self, a_fSensorState):
 
         if( True == self.m_fIsOutsideAutoLightEnabled ):
