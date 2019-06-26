@@ -103,49 +103,6 @@ class AppManager:
                 self.m_MqttPub.publish('webOLight','OFF')
         else:
             print('handleOutsideHallSensor m_fIsSecurityEnabled false')            
-
-    def setOutsideLedState(self, a_fLedState):
-        print('setOutsideLedState a_fLedState ' + a_fLedState)
-        
-        if ('ON' == a_fLedState):
-            self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_ON)
-            self.m_MqttPub.publish('webOLight','ON')
-            self.m_fIsOutsideAutoLightEnabled = False
-        elif ('OFF' == a_fLedState):
-            self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_OFF)
-            self.m_MqttPub.publish('webOLight','OFF')
-            self.m_fIsOutsideAutoLightEnabled = False
-        elif('AUTO' == a_fLedState):
-            self.m_fIsOutsideAutoLightEnabled = True
-        else :
-            print('setOutsideLedState unknown state received a_fLedState' +a_fLedState)
-
-    def setInsideLedState(self, a_fLedState):
-        print('setOutsideLedState a_fLedState ' + a_fLedState)
-        
-        if ('ON' == a_fLedState):
-            self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_LIGHT_LED_ON)
-            self.m_MqttPub.publish('webILight','ON')
-            self.m_fIsInsideAutoLightEnabled = False
-        elif ('OFF' == a_fLedState):
-            self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_LIGHT_LED_OFF)
-            self.m_MqttPub.publish('webILight','OFF')
-            self.m_fIsInsideAutoLightEnabled = False
-        elif('AUTO' == a_fLedState):
-            self.m_fIsInsideAutoLightEnabled = True
-        else :
-            print('setOutsideLedState unknown state received a_fLedState' +a_fLedState)            
-
-    def setSecurityState(self, a_fSecurityState):
-        if ('ON' == a_fSecurityState):
-            self.m_fIsSecurityEnabled = True
-        elif ('OFF' == a_fSecurityState):
-            self.m_fIsSecurityEnabled = False
-
-    def takeFrontDoorSnap(self):
-        print('takeFrontDoorSnap')
-        sendMailThread2 = Thread(target = self.sendEmail, args = (Settings.SCREENSHOT_EMAIL_SUBJECT,))
-        sendMailThread2.start()
         
     def handleOutsideLightSensor(self, a_fSensorState):
 
@@ -161,6 +118,21 @@ class AppManager:
                 print('handleOutsideLightSensor unknown state received a_fSensorState' + a_fSensorState)
         else:
              print('handleOutsideLightSensor m_fIsOutsideAutoLightEnabled false')
+
+    def handleInsideMotionSensor(self, a_fSensorState):
+
+        if( True == self.m_fIsInsideAutoLightEnabled ):
+            print('handleInsideMotionSensor a_fSensorState ' + a_fSensorState)
+            if ('HIGH' == a_fSensorState):
+                self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_MOTION_LED_ON)
+                self.m_MqttPub.publish('webILight','ON')
+            elif ('LOW' == a_fSensorState):
+                self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_MOTION_LED_OFF)
+                self.m_MqttPub.publish('webILight','OFF')
+            else:
+                print('handleInsideMotionSensor unknown state received a_fSensorState' + a_fSensorState)
+        else:
+             print('handleInsideMotionSensor m_fIsInsideAutoLightEnabled false')    
 
     def handleInsideLightSensor(self, a_fSensorState):
 
@@ -233,6 +205,49 @@ class AppManager:
         self.m_iUserDesiredTemp = int(tempValue)
         self.handleInsideTempSensor(self.m_iCurrentTempValue)
 
+    def setOutsideLedState(self, a_fLedState):
+        print('setOutsideLedState a_fLedState ' + a_fLedState)
+        
+        if ('ON' == a_fLedState):
+            self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_ON)
+            self.m_MqttPub.publish('webOLight','ON')
+            self.m_fIsOutsideAutoLightEnabled = False
+        elif ('OFF' == a_fLedState):
+            self.m_MC1SerialTx.send(SerialSettings.O_SSE_TX_MOTION_LED_OFF)
+            self.m_MqttPub.publish('webOLight','OFF')
+            self.m_fIsOutsideAutoLightEnabled = False
+        elif('AUTO' == a_fLedState):
+            self.m_fIsOutsideAutoLightEnabled = True
+        else :
+            print('setOutsideLedState unknown state received a_fLedState' +a_fLedState)
+
+    def setInsideLedState(self, a_fLedState):
+        print('setOutsideLedState a_fLedState ' + a_fLedState)
+        
+        if ('ON' == a_fLedState):
+            self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_LIGHT_LED_ON)
+            self.m_MqttPub.publish('webILight','ON')
+            self.m_fIsInsideAutoLightEnabled = False
+        elif ('OFF' == a_fLedState):
+            self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_LIGHT_LED_OFF)
+            self.m_MqttPub.publish('webILight','OFF')
+            self.m_fIsInsideAutoLightEnabled = False
+        elif('AUTO' == a_fLedState):
+            self.m_fIsInsideAutoLightEnabled = True
+        else :
+            print('setOutsideLedState unknown state received a_fLedState' +a_fLedState)            
+
+    def setSecurityState(self, a_fSecurityState):
+        if ('ON' == a_fSecurityState):
+            self.m_fIsSecurityEnabled = True
+        elif ('OFF' == a_fSecurityState):
+            self.m_fIsSecurityEnabled = False
+
+    def takeFrontDoorSnap(self):
+        print('takeFrontDoorSnap')
+        sendMailThread2 = Thread(target = self.sendEmail, args = (Settings.SCREENSHOT_EMAIL_SUBJECT,))
+        sendMailThread2.start()
+    
     def addEmailAddress(self, emailAddr):
 
         if emailAddr in open('emailList.txt').read():
@@ -255,8 +270,4 @@ class AppManager:
             writer.close()
             print('email removed succesfully')
         else:
-            print("email not in the list")
-            
-            writer.write(emailAddr)
-            writer.write("\n")
-            
+            print("email not in the list")            

@@ -377,16 +377,18 @@ function sendEmailAdress(id)
   {
     if("addEmail" == id)
     {
+      alert("Email address has been added to the notification list");
       topic = "addEmailAddress";
     }
     else
     {
+      alert("Email address has been removed from the notification list");
       topic = "removeEmailAddress";
     }
 
     message = emailAddr;
     mqttPublish(message,topic);
-    alert("Email address has been added to the notification list");
+    
   }
   else
   {

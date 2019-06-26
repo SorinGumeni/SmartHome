@@ -20,14 +20,14 @@ char incomingByte = 0;
 
 void setup() 
 {
-  pinMode(INSIDE_LIGHT_SENSOR,  INPUT); // define pin as Input  sensor
-  pinMode(INSIDE_MOTION_SENSOR, INPUT);
-  pinMode(INSIDE_FLAME_SENSOR,  INPUT);
+  pinMode(INSIDE_LIGHT_SENSOR,  INPUT);//define pin as Input  sensor
+  pinMode(INSIDE_MOTION_SENSOR, INPUT);//define pin as Input  sensor
+  pinMode(INSIDE_FLAME_SENSOR,  INPUT);//define pin as Input  sensor
 
-  pinMode(INSIDE_LIGHT_LED,     OUTPUT);    // declare led pin as output
-  pinMode(INSIDE_VENT_PIN,      OUTPUT);
-  pinMode(INSIDE_HEATING_PIN,   OUTPUT);
-  pinMode(INSIDE_FLAME_BUZZER,  OUTPUT);
+  pinMode(INSIDE_LIGHT_LED,     OUTPUT);// declare led pin as output
+  pinMode(INSIDE_VENT_PIN,      OUTPUT);// declare led pin as output
+  pinMode(INSIDE_HEATING_PIN,   OUTPUT);// declare led pin as output
+  pinMode(INSIDE_FLAME_BUZZER,  OUTPUT);// declare led pin as output
 
   Serial.begin(9600); // Default communication rate of the Bluetooth module
 }

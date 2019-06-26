@@ -41,7 +41,7 @@ class SerialHandler:
             self.m_oAppMngr.handleOutsideLightSensor('LOW')
 
         elif a_sEvent == SerialSettings.SSE_RX_INSIDE_TEMP_VAL:
-            print('SSE_RX_INSIDE_TEMP_VAL event received')
+            #print('SSE_RX_INSIDE_TEMP_VAL event received')
             temp = self.keepOnlyDigits(temp)
             value = int(temp)            
             self.m_oAppMngr.handleInsideTempSensor(value)
@@ -68,6 +68,14 @@ class SerialHandler:
 
         elif a_sEvent  == SerialSettings.SSE_RX_OUTSIDE_HALL_SENSOR_OFF: 
             print('SSE_RX_OUTSIDE_HALL_SENSOR_OFF event received')
+            self.m_oAppMngr.handleOutsideHallSensor('LOW')  
+
+        elif a_sEvent  == SerialSettings.SSE_RX_INSIDE_MOTION_SENSOR_ON: 
+            print('SSE_RX_INSIDE_MOTION_SENSOR_ON event received')
+            self.m_oAppMngr.handleOutsideHallSensor('LOW')  
+
+        elif a_sEvent  == SerialSettings.SSE_RX_INSIDE_MOTION_SENSOR_OFF: 
+            print('SSE_RX_INSIDE_MOTION_SENSOR_OFF event received')
             self.m_oAppMngr.handleOutsideHallSensor('LOW')  
 
         else:
