@@ -72,11 +72,11 @@ class SerialHandler:
 
         elif a_sEvent  == SerialSettings.SSE_RX_INSIDE_MOTION_SENSOR_ON: 
             print('SSE_RX_INSIDE_MOTION_SENSOR_ON event received')
-            self.m_oAppMngr.handleOutsideHallSensor('LOW')  
+            self.m_oAppMngr.handleInsideMotionSensor('HIGH')
 
         elif a_sEvent  == SerialSettings.SSE_RX_INSIDE_MOTION_SENSOR_OFF: 
             print('SSE_RX_INSIDE_MOTION_SENSOR_OFF event received')
-            self.m_oAppMngr.handleOutsideHallSensor('LOW')  
+            self.m_oAppMngr.handleInsideMotionSensor('LOW')  
 
         else:
             print('Unknown serial event received' + a_sEvent)

@@ -35,9 +35,9 @@ void setup()
 void loop() 
 {
   //////////////////// READ SENSOR VALUES ///////////////////////		
-  lightSensorValue = digitalRead(INSIDE_LIGHT_SENSOR);// read the sensor
-  motionSensorVal  = digitalRead(INSIDE_MOTION_SENSOR);  // read input value
-  flameSensorValue = digitalRead(INSIDE_FLAME_SENSOR);
+  lightSensorValue = digitalRead(INSIDE_LIGHT_SENSOR);//read the sensor value
+  motionSensorVal  = digitalRead(INSIDE_MOTION_SENSOR);//read the sensor value
+  flameSensorValue = digitalRead(INSIDE_FLAME_SENSOR);//read the sensor value
   
   tempSensorValue  = analogRead(INSIDE_TEMP_SENSOR);
   
@@ -45,6 +45,7 @@ void loop()
   handleTempSensor(tempSensorValue);
   handleLightSensor(lightSensorValue);
   handleFlameSensor(flameSensorValue);
+  handleMotionSensor(motionSensorVal);
 
   //////////////////// CHECK FOR SERIAL EVENTS ///////////////////////
   handleSerialEvent();
