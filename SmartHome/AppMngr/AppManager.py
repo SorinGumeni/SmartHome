@@ -241,6 +241,7 @@ class AppManager:
         if ('ON' == a_fSecurityState):
             self.m_fIsSecurityEnabled = True
         elif ('OFF' == a_fSecurityState):
+            self.alarmSystemDeactivated()
             self.m_fIsSecurityEnabled = False
 
     def takeFrontDoorSnap(self):
