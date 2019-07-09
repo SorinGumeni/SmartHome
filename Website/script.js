@@ -18,6 +18,7 @@ function onConnectionLost(responseObject) {
     if (responseObject.errorCode !== 0) {
         console.log("onConnectionLost:" + responseObject.errorMessage);
     }
+    connectMQTT();
 }
 
 function on_connect(client, userdata, flags, rc)
