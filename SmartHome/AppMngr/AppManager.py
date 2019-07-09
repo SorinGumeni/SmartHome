@@ -156,6 +156,10 @@ class AppManager:
             self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_BUZZER_ON)
             self.m_MqttPub.publish('webIFlame','ON')
             self.m_MqttPub.publish('webOFlameLed','ACTIVE')
+
+            sendMailThread = Thread(target = self.sendEmail, args = (Settings.SENSOR_FLAME_SUBJECT,))
+            sendMailThread.start()
+            
         elif ('LOW' == a_fSensorState):
             self.m_MC2SerialTx.send(SerialSettings.I_SSE_TX_BUZZER_OFF)
             self.m_MqttPub.publish('webIFlame','OFF')
